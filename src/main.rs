@@ -4,12 +4,12 @@ pub mod point;
 pub mod tree_node;
 
 use component_builder::ComponentBuilder;
+use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::fs::File;
+use std::hash::{Hash, Hasher};
 use std::io::Read;
 use tree_node::TreeNode;
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
 
 fn parse_line(line: &str) -> (i64, String) {
     let mut words = line.split('\t');
@@ -33,14 +33,14 @@ fn main() {
     let mut lines = contents.lines();
 
     let mut last_line = parse_line(lines.next().unwrap());
-    let time_period=60*60*24;
+    let time_period = 60 * 60 * 24;
 
     while let Some(line) = lines.next() {
         let contents = parse_line(line);
 
         let delta = contents.0 - last_line.0;
 
-        if contents.0 < current_time-time_period || last_line.1 == "health.rest.sleep" {
+        if contents.0 < current_time - time_period || last_line.1 == "health.rest.sleep" {
         } else {
             activities.push((delta, last_line.1));
         }
@@ -54,7 +54,10 @@ fn main() {
     let delta = epoch - last_line.0;
     activities.push((delta, last_line.1));
 
-    let mut tree=TreeNode{value:0.0, children:HashMap::new()};
+    let mut tree = TreeNode {
+        value: 0.0,
+        children: HashMap::new(),
+    };
 
     for activity in &activities {
         let time = activity.0 as f64;
@@ -65,94 +68,93 @@ fn main() {
         println!("{} | {} | {} | {}", major, minor, activity, time);
     }
 
-    let mut svg = format!(
-        "<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n"
-    );
+    let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
 
     println!("{}", tree.value);
-    let mut y=10.;
-    let factor=tree.value/700.;
-    let width=1870./3.;
-    let mut innercount=0.;
-    let mut middlecount=0.;
-    let mut outercount=0.;
+    let mut y = 10.;
+    let factor = tree.value / 700.;
+    let width = 1870. / 3.;
+    let mut innercount = 0.;
+    let mut middlecount = 0.;
+    let mut outercount = 0.;
+    let step = 5.;
 
-    let saturation="50%";
-    let lightness="70%";
+    let saturation = "50%";
+    let lightness = "70%";
 
-    let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
+    let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
     keys.sort();
     for key in keys {
-        let major=key;
-        let x=10.;
+        let major = key;
+        let x = 10.;
 
         let value = tree.children[key].value / factor;
         println!("{} {}", key, value);
 
-        let label=format!("{major}");
+        let label = format!("{major}");
         let mut state = DefaultHasher::new();
         label.hash(&mut state);
-        let hue=state.finish() % 360;
-        svg += ComponentBuilder::new(x, y, x+width-10., y+outercount)
+        let hue = state.finish() % 360;
+        svg += ComponentBuilder::new(x, y, x + width - 10., y + outercount)
             .height(value)
-            .color(format!("hsl({}, {saturation}, {lightness})",hue).as_str())
+            .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
             .right_text(label.as_str())
             .data(format!("{label}: {:.2} minutes", value).as_str())
             .build()
             .draw()
             .as_str();
 
-        let tree=&tree.children[key];
-        let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
+        let tree = &tree.children[key];
+        let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
         keys.sort();
         for key in keys {
-            let minor=key;
-            let x=x+width;
+            let minor = key;
+            let x = x + width;
 
             let value = tree.children[key].value / factor;
             println!("  {} {}", key, value);
 
-            let label=format!("{major}.{minor}");
+            let label = format!("{major}.{minor}");
             let mut state = DefaultHasher::new();
             label.hash(&mut state);
-            let hue=state.finish() % 360;
-            svg += ComponentBuilder::new(x, y+outercount, x+width-10., y+middlecount)
+            let hue = state.finish() % 360;
+            svg += ComponentBuilder::new(x, y + outercount, x + width - 10., y + middlecount)
                 .height(value)
-                .color(format!("hsl({}, {saturation}, {lightness})",hue).as_str())
+                .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                 .right_text(label.as_str())
                 .data(format!("{label}: {:.2} minutes", value).as_str())
                 .build()
                 .draw()
                 .as_str();
 
-            let tree=&tree.children[key];
-            let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
+            let tree = &tree.children[key];
+            let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
             keys.sort();
             for key in keys {
-                let activity=key;
-                let x=x+width;
+                let activity = key;
+                let x = x + width;
 
                 let value = tree.children[key].value / factor;
                 println!("    {} {}", key, value);
 
-                let label=format!("{major}.{minor}.{activity}");
+                let label = format!("{major}.{minor}.{activity}");
                 let mut state = DefaultHasher::new();
                 label.hash(&mut state);
-                let hue=state.finish() % 360;
-                svg += ComponentBuilder::new(x, y+middlecount, x+width-10., y+innercount)
+                let hue = state.finish() % 360;
+                svg += ComponentBuilder::new(x, y + middlecount, x + width - 10., y + innercount)
                     .height(value)
-                    .color(format!("hsl({}, {saturation}, {lightness})",hue).as_str())
+                    .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                     .right_text(label.as_str())
                     .data(format!("{label}: {:.2} minutes", value).as_str())
                     .build()
                     .draw()
                     .as_str();
-                y+=value;
-                innercount+=10.;
+                y += value;
+                innercount += step;
             }
-            middlecount+=10.;
+            middlecount += step;
         }
-        outercount+=10.;
+        outercount += step;
     }
 
     svg += "</svg>\n";

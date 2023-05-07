@@ -63,7 +63,11 @@ impl Component {
         let bottom_left = Point::new(a.x, a.y + bar_height);
 
         let mut s = String::new();
-        s += format!("<path class='hover-element' data-tooltip='{}' d='", &self.data).as_str();
+        s += format!(
+            "<path class='hover-element' data-tooltip='{}' d='",
+            &self.data
+        )
+        .as_str();
 
         s += format!("M {} {}", top_left.x, top_left.y).as_str();
         s += format!(
