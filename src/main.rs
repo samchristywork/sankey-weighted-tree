@@ -75,9 +75,13 @@ fn main() {
     let mut middlecount=0.;
     let mut outercount=0.;
 
+    let saturation="50%";
+    let lightness="70%";
+
     let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
     keys.sort();
     for key in keys {
+        let major=key;
         let x=10.;
 
         let value = tree.children[key].value / factor;
@@ -85,10 +89,10 @@ fn main() {
 
         svg += ComponentBuilder::new(x, y, x+width-10., y+outercount)
             .height(value)
-            .left_color("red")
-            .right_color("grey")
-            .right_text(key)
-            .data(format!("{}", value).as_str())
+            .left_color("grey")
+            .right_color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
+            .right_text(format!("{major}").as_str())
+            .data(format!("{major}: {:.2} minutes", value).as_str())
             .build()
             .draw()
             .as_str();
@@ -97,6 +101,7 @@ fn main() {
         let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
         keys.sort();
         for key in keys {
+            let minor=key;
             let x=x+width;
 
             let value = tree.children[key].value / factor;
@@ -104,10 +109,10 @@ fn main() {
 
             svg += ComponentBuilder::new(x, y+outercount, x+width-10., y+middlecount)
                 .height(value)
-                .left_color("red")
-                .right_color("grey")
-                .right_text(key)
-                .data(format!("{}", value).as_str())
+                .left_color("grey")
+                .right_color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
+                .right_text(format!("{major}.{minor}").as_str())
+                .data(format!("{major}.{minor}: {:.2} minutes", value).as_str())
                 .build()
                 .draw()
                 .as_str();
@@ -116,6 +121,7 @@ fn main() {
             let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
             keys.sort();
             for key in keys {
+                let activity=key;
                 let x=x+width;
 
                 let value = tree.children[key].value / factor;
@@ -123,10 +129,10 @@ fn main() {
 
                 svg += ComponentBuilder::new(x, y+middlecount, x+width-10., y+innercount)
                     .height(value)
-                    .left_color("red")
-                    .right_color("grey")
-                    .right_text(key)
-                    .data(format!("{}", value).as_str())
+                    .left_color("grey")
+                    .right_color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
+                    .right_text(format!("{major}.{minor}.{activity}").as_str())
+                    .data(format!("{major}.{minor}.{activity}: {:.2} minutes", value).as_str())
                     .build()
                     .draw()
                     .as_str();
