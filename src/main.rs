@@ -8,6 +8,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 use tree_node::TreeNode;
+use std::collections::hash_map::DefaultHasher;
+use std::hash::{Hash, Hasher};
 
 fn parse_line(line: &str) -> (i64, String) {
     let mut words = line.split('\t');
@@ -87,11 +89,15 @@ fn main() {
         let value = tree.children[key].value / factor;
         println!("{} {}", key, value);
 
+        let label=format!("{major}");
+        let mut state = DefaultHasher::new();
+        label.hash(&mut state);
+        let hue=state.finish() % 360;
         svg += ComponentBuilder::new(x, y, x+width-10., y+outercount)
             .height(value)
-            .color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
-            .right_text(format!("{major}").as_str())
-            .data(format!("{major}: {:.2} minutes", value).as_str())
+            .color(format!("hsl({}, {saturation}, {lightness})",hue).as_str())
+            .right_text(label.as_str())
+            .data(format!("{label}: {:.2} minutes", value).as_str())
             .build()
             .draw()
             .as_str();
@@ -106,11 +112,15 @@ fn main() {
             let value = tree.children[key].value / factor;
             println!("  {} {}", key, value);
 
+            let label=format!("{major}.{minor}");
+            let mut state = DefaultHasher::new();
+            label.hash(&mut state);
+            let hue=state.finish() % 360;
             svg += ComponentBuilder::new(x, y+outercount, x+width-10., y+middlecount)
                 .height(value)
-                .color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
-                .right_text(format!("{major}.{minor}").as_str())
-                .data(format!("{major}.{minor}: {:.2} minutes", value).as_str())
+                .color(format!("hsl({}, {saturation}, {lightness})",hue).as_str())
+                .right_text(label.as_str())
+                .data(format!("{label}: {:.2} minutes", value).as_str())
                 .build()
                 .draw()
                 .as_str();
@@ -125,11 +135,15 @@ fn main() {
                 let value = tree.children[key].value / factor;
                 println!("    {} {}", key, value);
 
+                let label=format!("{major}.{minor}.{activity}");
+                let mut state = DefaultHasher::new();
+                label.hash(&mut state);
+                let hue=state.finish() % 360;
                 svg += ComponentBuilder::new(x, y+middlecount, x+width-10., y+innercount)
                     .height(value)
-                    .color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
-                    .right_text(format!("{major}.{minor}.{activity}").as_str())
-                    .data(format!("{major}.{minor}.{activity}: {:.2} minutes", value).as_str())
+                    .color(format!("hsl({}, {saturation}, {lightness})",hue).as_str())
+                    .right_text(label.as_str())
+                    .data(format!("{label}: {:.2} minutes", value).as_str())
                     .build()
                     .draw()
                     .as_str();
