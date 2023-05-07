@@ -37,6 +37,11 @@ impl ComponentBuilder {
         self
     }
 
+    pub fn data(mut self, data: &str) -> ComponentBuilder {
+        self.component.set_data(data.to_string());
+        self
+    }
+
     pub fn build(self) -> Component {
         self.component
     }

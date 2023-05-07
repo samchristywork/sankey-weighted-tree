@@ -77,6 +77,7 @@ fn main() {
             .left_color("red")
             .right_color("grey")
             .right_text(key)
+            .data(format!("{}", value).as_str())
             .build()
             .draw()
             .as_str();
@@ -93,6 +94,7 @@ fn main() {
                 .left_color("red")
                 .right_color("grey")
                 .right_text(key)
+                .data(format!("{}", value).as_str())
                 .build()
                 .draw()
                 .as_str();
@@ -109,6 +111,7 @@ fn main() {
                     .left_color("red")
                     .right_color("grey")
                     .right_text(key)
+                    .data(format!("{}", value).as_str())
                     .build()
                     .draw()
                     .as_str();

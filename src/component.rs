@@ -8,6 +8,7 @@ pub struct Component {
     bar_height: f64,
     text1: String,
     text2: String,
+    data: String,
 }
 
 impl Component {
@@ -20,6 +21,7 @@ impl Component {
             bar_height: 100.,
             text1: "".to_string(),
             text2: "".to_string(),
+            data: "".to_string(),
         }
     }
 
@@ -43,6 +45,10 @@ impl Component {
         self.bar_height = height;
     }
 
+    pub fn set_data(&mut self, data: String) {
+        self.data = data;
+    }
+
     pub fn draw(&self) -> String {
         let color1 = &self.color1;
         let color2 = &self.color2;
@@ -64,7 +70,7 @@ impl Component {
         let bottom_left = Point::new(a.x, a.y + bar_height);
 
         let mut s = String::new();
-        s += format!("<path class='hover-element' data-tooltip='test' d='").as_str();
+        s += format!("<path class='hover-element' data-tooltip='{}' d='", &self.data).as_str();
 
         s += format!("M {} {}", top_left.x, top_left.y).as_str();
         s += format!(
