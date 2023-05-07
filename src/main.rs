@@ -89,8 +89,7 @@ fn main() {
 
         svg += ComponentBuilder::new(x, y, x+width-10., y+outercount)
             .height(value)
-            .left_color("grey")
-            .right_color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
+            .color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
             .right_text(format!("{major}").as_str())
             .data(format!("{major}: {:.2} minutes", value).as_str())
             .build()
@@ -109,8 +108,7 @@ fn main() {
 
             svg += ComponentBuilder::new(x, y+outercount, x+width-10., y+middlecount)
                 .height(value)
-                .left_color("grey")
-                .right_color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
+                .color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
                 .right_text(format!("{major}.{minor}").as_str())
                 .data(format!("{major}.{minor}: {:.2} minutes", value).as_str())
                 .build()
@@ -129,8 +127,7 @@ fn main() {
 
                 svg += ComponentBuilder::new(x, y+middlecount, x+width-10., y+innercount)
                     .height(value)
-                    .left_color("grey")
-                    .right_color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
+                    .color(format!("hsl({}, {saturation}, {lightness})",value*12341234.1234).as_str())
                     .right_text(format!("{major}.{minor}.{activity}").as_str())
                     .data(format!("{major}.{minor}.{activity}: {:.2} minutes", value).as_str())
                     .build()

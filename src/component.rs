@@ -1,8 +1,7 @@
 use crate::point::Point;
 
 pub struct Component {
-    color1: String,
-    color2: String,
+    color: String,
     a: Point,
     b: Point,
     bar_height: f64,
@@ -14,8 +13,7 @@ pub struct Component {
 impl Component {
     pub fn new(a: Point, b: Point) -> Self {
         Self {
-            color1: "red".to_string(),
-            color2: "blue".to_string(),
+            color: "red".to_string(),
             a,
             b,
             bar_height: 100.,
@@ -33,12 +31,8 @@ impl Component {
         self.text2 = text;
     }
 
-    pub fn set_color1(&mut self, color: String) {
-        self.color1 = color;
-    }
-
-    pub fn set_color2(&mut self, color: String) {
-        self.color2 = color;
+    pub fn set_color(&mut self, color: String) {
+        self.color = color;
     }
 
     pub fn set_bar_height(&mut self, height: f64) {
@@ -50,8 +44,7 @@ impl Component {
     }
 
     pub fn draw(&self) -> String {
-        let color1 = &self.color1;
-        let color2 = &self.color2;
+        let color = &self.color;
         let a = &self.a;
         let b = &self.b;
         let bar_height = &self.bar_height;
@@ -64,7 +57,7 @@ impl Component {
         let left_text = Point::new(a.x + bar_width, a.y + bar_height / 2.);
         let right_text = Point::new(b.x, b.y + bar_height / 2.);
 
-        let top_left = Point::new(a.x + bar_width, a.y);
+        let top_left = Point::new(a.x, a.y);
         let top_right = Point::new(b.x, b.y);
         let bottom_right = Point::new(b.x, b.y + bar_height);
         let bottom_left = Point::new(a.x, a.y + bar_height);
@@ -89,13 +82,7 @@ impl Component {
         s += format!("' stroke='none' fill='#ccc' />\n").as_str();
 
         s += format!(
-            "<rect x='{}' y='{}' width='{bar_width}' height='{bar_height}' fill='{color1}' />\n",
-            a.x, a.y
-        )
-        .as_str();
-
-        s += format!(
-            "<rect x='{}' y='{}' width='{bar_width}' height='{bar_height}' fill='{color2}' />\n",
+            "<rect x='{}' y='{}' width='{bar_width}' height='{bar_height}' fill='{color}' />\n",
             b.x, b.y
         )
         .as_str();

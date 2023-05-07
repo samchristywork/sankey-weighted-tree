@@ -12,13 +12,8 @@ impl ComponentBuilder {
         }
     }
 
-    pub fn left_color(mut self, color: &str) -> ComponentBuilder {
-        self.component.set_color1(color.to_string());
-        self
-    }
-
-    pub fn right_color(mut self, color: &str) -> ComponentBuilder {
-        self.component.set_color2(color.to_string());
+    pub fn color(mut self, color: &str) -> ComponentBuilder {
+        self.component.set_color(color.to_string());
         self
     }
 
