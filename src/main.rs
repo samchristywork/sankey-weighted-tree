@@ -18,6 +18,11 @@ fn parse_line(line: &str) -> (i64, String) {
 }
 
 fn main() {
+    let current_time = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64;
+
     let mut activities = Vec::new();
 
     let mut file = File::open("log").unwrap();
@@ -26,13 +31,17 @@ fn main() {
     let mut lines = contents.lines();
 
     let mut last_line = parse_line(lines.next().unwrap());
+    let time_period=60*60*24;
 
     while let Some(line) = lines.next() {
         let contents = parse_line(line);
 
         let delta = contents.0 - last_line.0;
 
-        activities.push((delta, last_line.1));
+        if contents.0 < current_time-time_period || last_line.1 == "health.rest.sleep" {
+        } else {
+            activities.push((delta, last_line.1));
+        }
         last_line = contents;
     }
 
