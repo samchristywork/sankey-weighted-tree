@@ -75,7 +75,9 @@ fn main() {
     let mut middlecount=0.;
     let mut outercount=0.;
 
-    for key in tree.children.keys() {
+    let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
+    keys.sort();
+    for key in keys {
         let x=10.;
 
         let value = tree.children[key].value / factor;
@@ -92,7 +94,9 @@ fn main() {
             .as_str();
 
         let tree=&tree.children[key];
-        for key in tree.children.keys() {
+        let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
+        keys.sort();
+        for key in keys {
             let x=x+width;
 
             let value = tree.children[key].value / factor;
@@ -109,7 +113,9 @@ fn main() {
                 .as_str();
 
             let tree=&tree.children[key];
-            for key in tree.children.keys() {
+            let mut keys:Vec<&String>=tree.children.keys().into_iter().collect();
+            keys.sort();
+            for key in keys {
                 let x=x+width;
 
                 let value = tree.children[key].value / factor;
