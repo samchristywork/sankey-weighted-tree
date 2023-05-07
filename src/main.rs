@@ -39,7 +39,7 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
         let major = key;
         let x = 10.;
 
-        let value = tree.children[key].value / factor;
+        let value = tree.children[key].value;
         println!("{} {}", key, value);
 
         let label = format!("{major}");
@@ -47,10 +47,10 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
         label.hash(&mut state);
         let hue = state.finish() % 360;
         svg += ComponentBuilder::new(x, y, x + width - 10., y + outercount)
-            .height(value)
+            .height(value/factor)
             .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
             .right_text(label.as_str())
-            .data(format!("{label}: {:.2} minutes", value).as_str())
+            .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
             .build()
             .draw()
             .as_str();
@@ -62,7 +62,7 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
             let minor = key;
             let x = x + width;
 
-            let value = tree.children[key].value / factor;
+            let value = tree.children[key].value;
             println!("  {} {}", key, value);
 
             let label = format!("{major}.{minor}");
@@ -70,10 +70,10 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
             label.hash(&mut state);
             let hue = state.finish() % 360;
             svg += ComponentBuilder::new(x, y + outercount, x + width - 10., y + middlecount)
-                .height(value)
+                .height(value/factor)
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                 .right_text(label.as_str())
-                .data(format!("{label}: {:.2} minutes", value).as_str())
+                .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
                 .build()
                 .draw()
                 .as_str();
@@ -85,7 +85,7 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
                 let activity = key;
                 let x = x + width;
 
-                let value = tree.children[key].value / factor;
+                let value = tree.children[key].value;
                 println!("    {} {}", key, value);
 
                 let label = format!("{major}.{minor}.{activity}");
@@ -93,14 +93,14 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
                 label.hash(&mut state);
                 let hue = state.finish() % 360;
                 svg += ComponentBuilder::new(x, y + middlecount, x + width - 10., y + innercount)
-                    .height(value)
+                    .height(value/factor)
                     .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                     .right_text(label.as_str())
-                    .data(format!("{label}: {:.2} minutes", value).as_str())
+                    .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
                     .build()
                     .draw()
                     .as_str();
-                y += value;
+                y += value/factor;
                 innercount += step;
             }
             middlecount += step;
