@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TODO</title>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.tooltip {
+  position: absolute;
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.hover-highlight {
+  stroke-width: 2;
+  stroke: #333;
+  transition: all 0.2s ease;
+}
+</style>
+</head>
+<body>
+  <div style="background: red; height: 98vh">
+  BODY
+  </div>
+<div class="tooltip" id="tooltip" style="display: none;">Tooltip content</div>
+</body>
+<script>
+const hoverElements = document.querySelectorAll('.hover-element');
+
+const tooltip = document.getElementById('tooltip');
+
+hoverElements.forEach((element) => {
+  element.addEventListener('mouseover', (event) => {
+    element.classList.add('hover-highlight');
+    tooltip.innerHTML = element.getAttribute('data-tooltip');
+    tooltip.style.display = 'block';
+  });
+
+  element.addEventListener('mouseout', () => {
+    element.classList.remove('hover-highlight');
+    tooltip.style.display = 'none';
+  });
+
+  element.addEventListener('mousemove', (event) => {
+    tooltip.style.top = `${event.pageY + 10}px`;
+    tooltip.style.left = `${event.pageX + 10}px`;
+  });
+});
+</script>
+</html>
