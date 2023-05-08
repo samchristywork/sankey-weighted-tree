@@ -185,7 +185,37 @@ fn draw_timeline(filename: &str) -> String {
 
     let mut data: Vec<Vec<Row>> = Vec::new();
     loop {
+        let tree = parse_file(filename, current_day, 60 * 60 * 24);
+        println!("{}", current_day);
 
+        if tree.children.len() == 0 {
+            current_day += 60 * 60 * 24;
+            continue;
+        }
+
+        let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
+        keys.sort();
+
+        let sum = keys
+            .clone()
+            .into_iter()
+            .map(|key| tree.children[key].value)
+            .sum::<f64>();
+
+        data.push(
+            keys.into_iter()
+                .map(|key| Row {
+                    key: key.clone(),
+                    delta: tree.children[key].value / sum,
+                })
+                .collect(),
+        );
+
+        if current_day > current_time {
+            break;
+        }
+
+        current_day += 60 * 60 * 24;
     }
 
 
