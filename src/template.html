@@ -75,30 +75,41 @@ function updateSVG() {
   switch (period) {
     case "1-hour":
       document.getElementById("graph-1-hours").style.display = "";
+      window.location.hash = "#1-hour";
       break;
     case "6-hours":
       document.getElementById("graph-6-hours").style.display = "";
+      window.location.hash = "#6-hours";
       break;
     case "12-hours":
       document.getElementById("graph-12-hours").style.display = "";
+      window.location.hash = "#12-hours";
       break;
     case "24-hours":
       document.getElementById("graph-24-hours").style.display = "";
+      window.location.hash = "#24-hours";
       break;
     case "weekly":
       document.getElementById("graph-weekly").style.display = "";
+      window.location.hash = "#weekly";
       break;
     case "monthly":
       document.getElementById("graph-monthly").style.display = "";
+      window.location.hash = "#monthly";
       break;
     case "yearly":
       document.getElementById("graph-yearly").style.display = "";
+      window.location.hash = "#yearly";
       break;
     default:
       break;
   }
 }
 
-document.getElementById("graph-24-hours").style.display = "";
+if (window.location.hash == "") {
+  window.location.hash = "#24-hours";
+}
+document.getElementById("period").value = window.location.hash.replace("#", "");
+updateSVG();
 </script>
 </html>
