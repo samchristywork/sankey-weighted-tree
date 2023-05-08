@@ -115,40 +115,39 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
     svg + "</svg>\n"
 }
 
-fn parse_file(filename: &str, time_period: i64) -> TreeNode {
-    let current_time = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs() as i64;
-
+fn parse_file(filename: &str, current_time: i64, time_period: i64) -> TreeNode {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
+    contents += format!("{}\tnow.now.now", current_time).as_str();
     let mut lines = contents.lines();
 
     let mut last_line = parse_line(lines.next().unwrap());
 
     while let Some(line) = lines.next() {
         let contents = parse_line(line);
+        let mut start_time = last_line.0;
+        let mut end_time = contents.0;
+        let activity = last_line.1.clone();
 
-        let delta = contents.0 - last_line.0;
+        if start_time < current_time - time_period {
+            start_time = current_time - time_period;
+        }
 
-        if contents.0 < current_time - time_period || last_line.1 == "health.rest.sleep" {
-        } else {
-            activities.push((delta, last_line.1));
+        if end_time > current_time {
+            end_time = current_time;
+        }
+
+        let delta = end_time - start_time;
+
+        if delta > 0 && activity != "health.rest.sleep" {
+            activities.push((delta, activity));
         }
 
         last_line = contents;
     }
-
-    let epoch = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs() as i64;
-    let delta = epoch - last_line.0;
-    activities.push((delta, last_line.1));
 
     let mut tree = TreeNode {
         value: 0.0,
