@@ -154,38 +154,46 @@ fn parse_file(filename: &str, current_time: i64, time_period: i64) -> TreeNode {
         children: HashMap::new(),
     };
 
+    let mut sum = 0.;
     for activity in &activities {
         let time = activity.0 as f64;
         let major = activity.1.split('.').nth(0).unwrap();
         let minor = activity.1.split('.').nth(1).unwrap();
         let activity = activity.1.split('.').nth(2).unwrap();
         tree.insert(major, minor, activity, time);
-        println!("{} | {} | {} | {}", major, minor, activity, time);
+        sum += time;
     }
 
     tree
 }
 
-fn main() {
-    let mut svg=String::new();
+struct Row {
+    key: String,
+    delta: f64,
+}
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*24*365);
-    svg+=render_tree(&tree, "graph-yearly").as_str();
+fn draw_timeline(filename: &str) -> String {
+    let mut svg = String::new();
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*24*30);
-    svg+=render_tree(&tree, "graph-monthly").as_str();
+    let current_time = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64;
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*24*7);
-    svg+=render_tree(&tree, "graph-weekly").as_str();
+    let start_of_first_day = 1672552800;
+    let mut current_day = start_of_first_day;
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*24);
-    svg+=render_tree(&tree, "graph-24-hours").as_str();
+    let mut data: Vec<Vec<Row>> = Vec::new();
+    loop {
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*12);
-    svg+=render_tree(&tree, "graph-12-hours").as_str();
+    }
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*6);
-    svg+=render_tree(&tree, "graph-6-hours").as_str();
+
+
+
+
+    svg
+}
 
     let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*1);
     svg+=render_tree(&tree, "graph-1-hours").as_str();
