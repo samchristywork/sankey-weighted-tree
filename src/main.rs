@@ -9,6 +9,10 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::hash::{Hash, Hasher};
 use std::io::Read;
+use tide::http::mime;
+use tide::prelude::*;
+use tide::Request;
+use tide::Response;
 use tree_node::TreeNode;
 
 fn parse_line(line: &str) -> (i64, String) {
@@ -135,6 +139,7 @@ fn parse_file(filename: &str, time_period: i64) -> TreeNode {
         } else {
             activities.push((delta, last_line.1));
         }
+
         last_line = contents;
     }
 
@@ -187,5 +192,20 @@ fn main() {
     svg+=render_tree(&tree, "graph-1-hours").as_str();
 
     let output = include_str!("template.html");
-    std::fs::write("index.html", output.replace("BODY", svg.as_str())).unwrap();
+    output.replace("BODY", svg.as_str())
+}
+
+async fn index(mut _req: Request<()>) -> tide::Result {
+    let output = include_str!("template.html").replace("BODY", app().as_str());
+    let mut foo: Response = output.into();
+    foo.set_content_type("text/html");
+    Ok(foo)
+}
+
+#[async_std::main]
+async fn main() -> tide::Result<()> {
+    let mut app = tide::new();
+    app.at("/").get(index);
+    app.listen("127.0.0.1:8725").await?;
+    Ok(())
 }
