@@ -244,8 +244,56 @@ fn draw_timeline(filename: &str) -> String {
     svg
 }
 
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", 60*60*1);
-    svg+=render_tree(&tree, "graph-1-hours").as_str();
+fn app() -> String {
+    let mut svg = String::new();
+
+    svg += draw_timeline("/home/sam/rofi_time_tracker/log").as_str();
+
+    let current_time = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs() as i64;
+
+    let tree = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        current_time,
+        60 * 60 * 24 * 365,
+    );
+    svg += render_tree(&tree, "graph-yearly").as_str();
+
+    let tree = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        current_time,
+        60 * 60 * 24 * 30,
+    );
+    svg += render_tree(&tree, "graph-monthly").as_str();
+
+    let tree = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        current_time,
+        60 * 60 * 24 * 7,
+    );
+    svg += render_tree(&tree, "graph-weekly").as_str();
+
+    let tree = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        current_time,
+        60 * 60 * 24,
+    );
+    svg += render_tree(&tree, "graph-24-hours").as_str();
+
+    let tree = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        current_time,
+        60 * 60 * 12,
+    );
+    svg += render_tree(&tree, "graph-12-hours").as_str();
+
+    let tree = parse_file("/home/sam/rofi_time_tracker/log", current_time, 60 * 60 * 6);
+    svg += render_tree(&tree, "graph-6-hours").as_str();
+
+    let tree = parse_file("/home/sam/rofi_time_tracker/log", current_time, 60 * 60 * 1);
+    svg += render_tree(&tree, "graph-1-hours").as_str();
 
     let output = include_str!("template.html");
     output.replace("BODY", svg.as_str())
