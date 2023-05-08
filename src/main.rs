@@ -218,9 +218,28 @@ fn draw_timeline(filename: &str) -> String {
         current_day += 60 * 60 * 24;
     }
 
+    let saturation = "50%";
+    let lightness = "70%";
+    let height = 40.;
+    svg += format!("<svg id=timeline style='' width='100%' height='{height}' xmlns='http://www.w3.org/2000/svg'>\n").as_str();
 
+    let mut x = 0.;
+    let x_step = 1800. / data.len() as f64;
 
+    for column in data {
+        let mut y = 0.;
+        for row in column {
+            let mut state = DefaultHasher::new();
+            row.key.hash(&mut state);
+            let hue = state.finish() % 360;
 
+            let delta = row.delta * height;
+            svg += format!("<rect x='{x}' y='{y}' width='{x_step}' height='{delta}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
+            y += delta;
+        }
+        x += x_step;
+    }
+    svg += "<svg><br>\n";
 
     svg
 }
