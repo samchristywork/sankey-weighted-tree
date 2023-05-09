@@ -121,13 +121,13 @@ fn render_tree(tree: &TreeNode, width: f64, height: f64) -> String {
     svg + "</svg>\n"
 }
 
-fn parse_file(filename: &str, current_time: i64, time_period: i64) -> TreeNode {
+fn parse_file(filename: &str, begin: i64, end: i64) -> TreeNode {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
-    contents += format!("{}\tnow.now.now", current_time).as_str();
+    contents += format!("{}\tnow.now.now", end).as_str();
     let mut lines = contents.lines();
 
     let mut last_line = parse_line(lines.next().unwrap());
@@ -138,12 +138,12 @@ fn parse_file(filename: &str, current_time: i64, time_period: i64) -> TreeNode {
         let mut end_time = contents.0;
         let activity = last_line.1.clone();
 
-        if start_time < current_time - time_period {
-            start_time = current_time - time_period;
+        if start_time < begin {
+            start_time = begin;
         }
 
-        if end_time > current_time {
-            end_time = current_time;
+        if end_time > end {
+            end_time = end;
         }
 
         let delta = end_time - start_time;
@@ -180,9 +180,9 @@ fn draw_timeline(filename: &str, width: f64) -> String {
     let start_of_first_day = 1672552800;
     let mut current_day = start_of_first_day;
 
-    let mut data: Vec<Vec<Row>> = Vec::new();
+    let mut data: Vec<(Vec<Row>, i64)> = Vec::new();
     loop {
-        let tree = parse_file(filename, current_day, 60 * 60 * 24);
+        let tree = parse_file(filename, current_day, current_day + 60 * 60 * 24);
 
         if tree.children.len() == 0 {
             current_day += 60 * 60 * 24;
@@ -198,26 +198,26 @@ fn draw_timeline(filename: &str, width: f64) -> String {
             .map(|key| tree.children[key].value)
             .sum::<f64>();
 
-        data.push(
+        data.push((
             keys.into_iter()
                 .map(|key| Row {
                     key: key.clone(),
                     delta: tree.children[key].value / sum,
                 })
                 .collect(),
-        );
-
-        if current_day > current_time {
-            break;
-        }
+            current_day,
+        ));
 
         current_day += 60 * 60 * 24;
+
+        if current_day + 60*60*24 > current_time {
+            break;
+        }
     }
 
     let saturation = "50%";
     let lightness = "70%";
     let height = 40.;
-    svg += format!("<svg id=timeline style='' width='100%' height='{height}' xmlns='http://www.w3.org/2000/svg'>\n").as_str();
 
     let mut x = 0.;
     let x_step = 1800. / data.len() as f64;
