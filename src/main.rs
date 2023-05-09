@@ -220,11 +220,20 @@ fn draw_timeline(filename: &str, width: f64) -> String {
     let height = 40.;
 
     let mut x = 0.;
-    let x_step = 1800. / data.len() as f64;
+    let x_step = width / data.len() as f64;
 
+    let mut svg = format!(
+        "<svg id=timeline width='100%' height='{height}' xmlns='http://www.w3.org/2000/svg'>\n"
+    );
     for column in data {
         let mut y = 0.;
-        for row in column {
+
+        let time = column.1;
+        svg += format!(
+            "<g class='hover-element' data-tooltip='{time}' onclick='changegraph({time});'>\n"
+        )
+        .as_str();
+        for row in column.0 {
             let mut state = DefaultHasher::new();
             row.key.hash(&mut state);
             let hue = state.finish() % 360;
@@ -233,6 +242,7 @@ fn draw_timeline(filename: &str, width: f64) -> String {
             svg += format!("<rect x='{x}' y='{y}' width='{x_step}' height='{delta}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
             y += delta;
         }
+        svg += format!("</g>").as_str();
         x += x_step;
     }
     svg += "<svg><br>\n";
