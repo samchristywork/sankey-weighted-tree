@@ -250,17 +250,12 @@ fn draw_timeline(filename: &str, width: f64) -> String {
     svg
 }
 
-fn draw_sankey(current: &String, period: &String, width: &String, height: &String) -> String {
-    let current_time = std::time::SystemTime::now()
-        .duration_since(std::time::UNIX_EPOCH)
-        .unwrap()
-        .as_secs()
-        - current.parse::<u64>().unwrap();
+fn draw_sankey(start_time: &String, end_time: &String, width: &String, height: &String) -> String {
 
     let tree = parse_file(
         "/home/sam/rofi_time_tracker/log",
-        current_time as i64,
-        period.parse::<i64>().unwrap(),
+        start_time.parse::<i64>().unwrap(),
+        end_time.parse::<i64>().unwrap(),
     );
 
     let svg = render_tree(
@@ -279,17 +274,23 @@ async fn index(mut _req: Request<()>) -> tide::Result {
     Ok(foo)
 }
 
-async fn timeline(_req: Request<()>) -> tide::Result {
-    Ok(draw_timeline("/home/sam/rofi_time_tracker/log").into())
+async fn timeline(req: Request<()>) -> tide::Result {
+    let query = req.query::<HashMap<String, String>>()?;
+    let width = query.get("width").unwrap();
+    Ok(draw_timeline(
+        "/home/sam/rofi_time_tracker/log",
+        width.parse::<f64>().unwrap(),
+    )
+    .into())
 }
 
 async fn sankey(req: Request<()>) -> tide::Result {
     let query = req.query::<HashMap<String, String>>()?;
-    let offset = query.get("offset").unwrap();
-    let period = query.get("period").unwrap();
+    let start_time = query.get("start_time").unwrap();
+    let end_time = query.get("end_time").unwrap();
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
-    Ok(draw_sankey(offset, period, width, height).into())
+    Ok(draw_sankey(start_time, end_time, width, height).into())
 }
 
 #[async_std::main]
