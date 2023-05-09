@@ -13,6 +13,11 @@ use tide::Request;
 use tide::Response;
 use tree_node::TreeNode;
 
+struct Row {
+    key: String,
+    delta: f64,
+}
+
 fn parse_line(line: &str) -> (i64, String) {
     let mut words = line.split('\t');
     let epoch: i64 = words.next().unwrap().parse().unwrap();
@@ -107,6 +112,12 @@ fn render_tree(tree: &TreeNode, width: f64, height: f64) -> String {
         outercount += step;
     }
 
+    let mut state = DefaultHasher::new();
+    "all".hash(&mut state);
+    let hue = state.finish() % 360;
+    y -= 10.;
+    svg += format!("<rect x='0' y='10' width='10' height='{y}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
+
     svg + "</svg>\n"
 }
 
@@ -160,14 +171,7 @@ fn parse_file(filename: &str, current_time: i64, time_period: i64) -> TreeNode {
     tree
 }
 
-struct Row {
-    key: String,
-    delta: f64,
-}
-
-fn draw_timeline(filename: &str) -> String {
-    let mut svg = String::new();
-
+fn draw_timeline(filename: &str, width: f64) -> String {
     let current_time = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
