@@ -24,7 +24,8 @@
 <body>
   <div>
     <label for="period">Select Period:</label>
-    <select name="period" id="period" onchange="updateSVG()">
+    <select name="period" id="period" onchange="periodChanged()">
+      <option value="today">Today</option>
       <option value="24-hours">Daily</option>
       <option value="1-hour">1 Hour</option>
       <option value="6-hours">6 Hours</option>
@@ -35,81 +36,85 @@
     </select>
   </div>
   <div style="height: 98vh">
-  BODY
+    <div id="timeline" style="height: 10%"></div>
+    <div id="app" style="height: 100%"></div>
   </div>
 <div class="tooltip" id="tooltip" style="display: none;">Tooltip content</div>
 </body>
 <script>
-const hoverElements = document.querySelectorAll('.hover-element');
 
-const tooltip = document.getElementById('tooltip');
+function periodChanged() {
+  window.location.hash = document.getElementById("period").value;
+  getData();
+}
 
-hoverElements.forEach((element) => {
-  element.addEventListener('mouseover', (event) => {
-    element.classList.add('hover-highlight');
-    tooltip.innerHTML = element.getAttribute('data-tooltip');
-    tooltip.style.display = 'block';
-  });
+async function getData() {
+  {
+    const response = await fetch("/timeline");
+    const text = await response.text();
+    document.getElementById("timeline").innerHTML = text;
+  }
 
-  element.addEventListener('mouseout', () => {
-    element.classList.remove('hover-highlight');
-    tooltip.style.display = 'none';
-  });
+  let period = 60*60;
 
-  element.addEventListener('mousemove', (event) => {
-    tooltip.style.top = `${event.pageY + 10}px`;
-    tooltip.style.left = `${event.pageX + 10}px`;
-  });
-});
-
-function updateSVG() {
-  const period = document.getElementById("period").value;
-  document.getElementById("graph-1-hours").style.display = "none";
-  document.getElementById("graph-6-hours").style.display = "none";
-  document.getElementById("graph-12-hours").style.display = "none";
-  document.getElementById("graph-24-hours").style.display = "none";
-  document.getElementById("graph-weekly").style.display = "none";
-  document.getElementById("graph-monthly").style.display = "none";
-  document.getElementById("graph-yearly").style.display = "none";
-
-  switch (period) {
+  switch (document.getElementById("period").value) {
     case "1-hour":
-      document.getElementById("graph-1-hours").style.display = "";
-      window.location.hash = "#1-hour";
+      period = 60*60;
       break;
     case "6-hours":
-      document.getElementById("graph-6-hours").style.display = "";
-      window.location.hash = "#6-hours";
+      period = 60*60*6;
       break;
     case "12-hours":
-      document.getElementById("graph-12-hours").style.display = "";
-      window.location.hash = "#12-hours";
+      period = 60*60*12;
       break;
     case "24-hours":
-      document.getElementById("graph-24-hours").style.display = "";
-      window.location.hash = "#24-hours";
+      period = 60*60*24;
       break;
     case "weekly":
-      document.getElementById("graph-weekly").style.display = "";
-      window.location.hash = "#weekly";
+      period = 60*60*24*7;
       break;
     case "monthly":
-      document.getElementById("graph-monthly").style.display = "";
-      window.location.hash = "#monthly";
+      period = 60*60*24*30;
       break;
     case "yearly":
-      document.getElementById("graph-yearly").style.display = "";
-      window.location.hash = "#yearly";
+      period = 60*60*24*365;
       break;
     default:
       break;
   }
+
+  let offset = 0;
+  const response = await fetch("/sankey?offset=" + offset + "&period=" + period + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
+  const text = await response.text();
+  document.getElementById("app").innerHTML = text;
+
+  const hoverElements = document.querySelectorAll('.hover-element');
+
+  const tooltip = document.getElementById('tooltip');
+
+  hoverElements.forEach((element) => {
+    element.addEventListener('mouseover', (event) => {
+      element.classList.add('hover-highlight');
+      tooltip.innerHTML = element.getAttribute('data-tooltip');
+      tooltip.style.display = 'block';
+    });
+
+    element.addEventListener('mouseout', () => {
+      element.classList.remove('hover-highlight');
+      tooltip.style.display = 'none';
+    });
+
+    element.addEventListener('mousemove', (event) => {
+      tooltip.style.top = `${event.pageY + 10}px`;
+      tooltip.style.left = `${event.pageX + 10}px`;
+    });
+  });
 }
 
 if (window.location.hash == "") {
   window.location.hash = "#24-hours";
 }
 document.getElementById("period").value = window.location.hash.replace("#", "");
-updateSVG();
+getData();
 </script>
 </html>

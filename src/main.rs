@@ -9,8 +9,6 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::hash::{Hash, Hasher};
 use std::io::Read;
-use tide::http::mime;
-use tide::prelude::*;
 use tide::Request;
 use tide::Response;
 use tree_node::TreeNode;
@@ -23,8 +21,8 @@ fn parse_line(line: &str) -> (i64, String) {
     (epoch, tag.to_string())
 }
 
-fn render_tree(tree: &TreeNode, id: &str) -> String {
-    let mut svg = format!("<svg id={id} style='display: none' width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
+fn render_tree(tree: &TreeNode, width: f64, height: f64) -> String {
+    let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
 
     let mut y = 10.;
     let factor = tree.value / 700.;
@@ -44,14 +42,13 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
         let x = 10.;
 
         let value = tree.children[key].value;
-        println!("{} {}", key, value);
 
         let label = format!("{major}");
         let mut state = DefaultHasher::new();
         label.hash(&mut state);
         let hue = state.finish() % 360;
         svg += ComponentBuilder::new(x, y, x + width - 10., y + outercount)
-            .height(value/factor)
+            .height(value / factor)
             .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
             .right_text(label.as_str())
             .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
@@ -67,14 +64,13 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
             let x = x + width;
 
             let value = tree.children[key].value;
-            println!("  {} {}", key, value);
 
             let label = format!("{major}.{minor}");
             let mut state = DefaultHasher::new();
             label.hash(&mut state);
             let hue = state.finish() % 360;
             svg += ComponentBuilder::new(x, y + outercount, x + width - 10., y + middlecount)
-                .height(value/factor)
+                .height(value / factor)
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                 .right_text(label.as_str())
                 .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
@@ -90,21 +86,20 @@ fn render_tree(tree: &TreeNode, id: &str) -> String {
                 let x = x + width;
 
                 let value = tree.children[key].value;
-                println!("    {} {}", key, value);
 
                 let label = format!("{major}.{minor}.{activity}");
                 let mut state = DefaultHasher::new();
                 label.hash(&mut state);
                 let hue = state.finish() % 360;
                 svg += ComponentBuilder::new(x, y + middlecount, x + width - 10., y + innercount)
-                    .height(value/factor)
+                    .height(value / factor)
                     .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                     .right_text(label.as_str())
                     .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
                     .build()
                     .draw()
                     .as_str();
-                y += value/factor;
+                y += value / factor;
                 innercount += step;
             }
             middlecount += step;
@@ -154,14 +149,12 @@ fn parse_file(filename: &str, current_time: i64, time_period: i64) -> TreeNode {
         children: HashMap::new(),
     };
 
-    let mut sum = 0.;
     for activity in &activities {
         let time = activity.0 as f64;
         let major = activity.1.split('.').nth(0).unwrap();
         let minor = activity.1.split('.').nth(1).unwrap();
         let activity = activity.1.split('.').nth(2).unwrap();
         tree.insert(major, minor, activity, time);
-        sum += time;
     }
 
     tree
@@ -186,7 +179,6 @@ fn draw_timeline(filename: &str) -> String {
     let mut data: Vec<Vec<Row>> = Vec::new();
     loop {
         let tree = parse_file(filename, current_day, 60 * 60 * 24);
-        println!("{}", current_day);
 
         if tree.children.len() == 0 {
             current_day += 60 * 60 * 24;
@@ -244,71 +236,53 @@ fn draw_timeline(filename: &str) -> String {
     svg
 }
 
-fn app() -> String {
-    let mut svg = String::new();
-
-    svg += draw_timeline("/home/sam/rofi_time_tracker/log").as_str();
-
+fn draw_sankey(current: &String, period: &String, width: &String, height: &String) -> String {
     let current_time = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
-        .as_secs() as i64;
+        .as_secs()
+        - current.parse::<u64>().unwrap();
 
     let tree = parse_file(
         "/home/sam/rofi_time_tracker/log",
-        current_time,
-        60 * 60 * 24 * 365,
+        current_time as i64,
+        period.parse::<i64>().unwrap(),
     );
-    svg += render_tree(&tree, "graph-yearly").as_str();
 
-    let tree = parse_file(
-        "/home/sam/rofi_time_tracker/log",
-        current_time,
-        60 * 60 * 24 * 30,
+    let svg = render_tree(
+        &tree,
+        width.parse::<f64>().unwrap(),
+        height.parse::<f64>().unwrap(),
     );
-    svg += render_tree(&tree, "graph-monthly").as_str();
 
-    let tree = parse_file(
-        "/home/sam/rofi_time_tracker/log",
-        current_time,
-        60 * 60 * 24 * 7,
-    );
-    svg += render_tree(&tree, "graph-weekly").as_str();
-
-    let tree = parse_file(
-        "/home/sam/rofi_time_tracker/log",
-        current_time,
-        60 * 60 * 24,
-    );
-    svg += render_tree(&tree, "graph-24-hours").as_str();
-
-    let tree = parse_file(
-        "/home/sam/rofi_time_tracker/log",
-        current_time,
-        60 * 60 * 12,
-    );
-    svg += render_tree(&tree, "graph-12-hours").as_str();
-
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", current_time, 60 * 60 * 6);
-    svg += render_tree(&tree, "graph-6-hours").as_str();
-
-    let tree = parse_file("/home/sam/rofi_time_tracker/log", current_time, 60 * 60 * 1);
-    svg += render_tree(&tree, "graph-1-hours").as_str();
-
-    let output = include_str!("template.html");
-    output.replace("BODY", svg.as_str())
+    svg
 }
 
 async fn index(mut _req: Request<()>) -> tide::Result {
-    let output = include_str!("template.html").replace("BODY", app().as_str());
+    let output = include_str!("template.html");
     let mut foo: Response = output.into();
     foo.set_content_type("text/html");
     Ok(foo)
 }
 
+async fn timeline(_req: Request<()>) -> tide::Result {
+    Ok(draw_timeline("/home/sam/rofi_time_tracker/log").into())
+}
+
+async fn sankey(req: Request<()>) -> tide::Result {
+    let query = req.query::<HashMap<String, String>>()?;
+    let offset = query.get("offset").unwrap();
+    let period = query.get("period").unwrap();
+    let width = query.get("width").unwrap();
+    let height = query.get("height").unwrap();
+    Ok(draw_sankey(offset, period, width, height).into())
+}
+
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     let mut app = tide::new();
+    app.at("/sankey").get(sankey);
+    app.at("/timeline").get(timeline);
     app.at("/").get(index);
     app.listen("127.0.0.1:8725").await?;
     Ok(())
