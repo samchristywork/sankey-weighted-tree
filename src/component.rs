@@ -50,12 +50,13 @@ impl Component {
         let bar_height = &self.bar_height;
         let text1 = &self.text1;
         let text2 = &self.text2;
+        let text_padding = 5.;
 
         let mx = (a.x + b.x) / 2.;
         let bar_width = 10.;
 
-        let left_text = Point::new(a.x + bar_width, a.y + bar_height / 2.);
-        let right_text = Point::new(b.x, b.y + bar_height / 2.);
+        let left_text = Point::new(a.x + text_padding, a.y + bar_height / 2.);
+        let right_text = Point::new(b.x - text_padding, b.y + bar_height / 2.);
 
         let top_left = Point::new(a.x, a.y);
         let top_right = Point::new(b.x, b.y);
@@ -91,12 +92,13 @@ impl Component {
         )
         .as_str();
 
+        let font_size = 12.;
         s += format!(
-            "<text x='{}' y='{}' font-family='Verdana' font-size='12' fill='#222'>{text1}</text>\n",
-            left_text.x, left_text.y
+            "<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#222'>{text1}</text>\n",
+            left_text.x, left_text.y+font_size/4.
         )
         .as_str();
-        s += format!("<text x='{}' y='{}' font-family='Verdana' font-size='12' fill='#222' text-anchor='end'>{text2}</text>\n", right_text.x, right_text.y).as_str();
+        s += format!("<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#222' text-anchor='end'>{text2}</text>\n", right_text.x, right_text.y + font_size/4.).as_str();
 
         s
     }
