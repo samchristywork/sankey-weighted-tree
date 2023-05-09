@@ -36,8 +36,8 @@
     </select>
   </div>
   <div style="height: 98vh">
-    <div id="timeline" style="height: 10%"></div>
-    <div id="app" style="height: 100%"></div>
+    <div id="timeline" style="height: 5%"></div>
+    <div id="app" style="height: 95%"></div>
   </div>
 <div class="tooltip" id="tooltip" style="display: none;">Tooltip content</div>
 </body>
@@ -48,14 +48,27 @@ function periodChanged() {
   getData();
 }
 
-async function getData() {
-  {
-    const response = await fetch("/timeline");
-    const text = await response.text();
-    document.getElementById("timeline").innerHTML = text;
-  }
+let current_time = Math.floor(+(new Date())/1000);
+let period = 60*60*24;
 
-  let period = 60*60;
+function getStartOfDayTimestamp() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const date = now.getDate();
+
+  const sod = new Date(year, month, date, 0, 0, 0);
+  return Math.floor(sod.getTime() / 1000);
+}
+
+function changegraph(time) {
+  time += 60*60*24;
+  get_chart(time - period, time);
+}
+
+const SODTimestamp = getStartOfDayTimestamp();
+
+async function getData() {
 
   switch (document.getElementById("period").value) {
     case "1-hour":
@@ -83,8 +96,17 @@ async function getData() {
       break;
   }
 
-  let offset = 0;
-  const response = await fetch("/sankey?offset=" + offset + "&period=" + period + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
+  get_chart(current_time - period, current_time);
+}
+
+async function get_chart(start_time, end_time) {
+  {
+    const response = await fetch("/timeline?width=" + window.innerWidth);
+    const text = await response.text();
+    document.getElementById("timeline").innerHTML = text;
+  }
+
+  const response = await fetch("/sankey?start_time=" + start_time + "&end_time=" + end_time + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
   const text = await response.text();
   document.getElementById("app").innerHTML = text;
 
@@ -115,6 +137,7 @@ if (window.location.hash == "") {
   window.location.hash = "#24-hours";
 }
 document.getElementById("period").value = window.location.hash.replace("#", "");
-getData();
+get_chart(SODTimestamp, current_time);
+
 </script>
 </html>
