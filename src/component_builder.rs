@@ -37,6 +37,11 @@ impl ComponentBuilder {
         self
     }
 
+    pub fn body_color(mut self, color: &str) -> ComponentBuilder {
+        self.component.set_body_color(color.to_string());
+        self
+    }
+
     pub fn build(self) -> Component {
         self.component
     }

@@ -2,6 +2,7 @@ use crate::point::Point;
 
 pub struct Component {
     color: String,
+    body_color: String,
     a: Point,
     b: Point,
     bar_height: f64,
@@ -14,6 +15,7 @@ impl Component {
     pub fn new(a: Point, b: Point) -> Self {
         Self {
             color: "red".to_string(),
+            body_color: "#ccc".to_string(),
             a,
             b,
             bar_height: 100.,
@@ -41,6 +43,10 @@ impl Component {
 
     pub fn set_data(&mut self, data: String) {
         self.data = data;
+    }
+
+    pub fn set_body_color(&mut self, color: String) {
+        self.body_color = color;
     }
 
     pub fn draw(&self) -> String {
@@ -84,7 +90,7 @@ impl Component {
         )
         .as_str();
 
-        s += format!("' stroke='none' fill='#ccc' />\n").as_str();
+        s += format!("' stroke='none' fill='{}' />\n", self.body_color).as_str();
 
         s += format!(
             "<rect x='{}' y='{}' width='{bar_width}' height='{bar_height}' fill='{color}' />\n",

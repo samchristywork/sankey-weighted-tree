@@ -1,7 +1,7 @@
-use std::collections::hash_map::DefaultHasher;
-use std::hash::Hasher;
-use std::hash::Hash;
 use crate::parse_file;
+use std::collections::hash_map::DefaultHasher;
+use std::hash::Hash;
+use std::hash::Hasher;
 
 struct Row {
     key: String,

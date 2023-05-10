@@ -2,9 +2,9 @@ pub mod component;
 pub mod component_builder;
 pub mod parse;
 pub mod point;
+pub mod render;
 pub mod timeline;
 pub mod tree_node;
-pub mod render;
 
 use parse::parse_file;
 use render::render_sankey;
