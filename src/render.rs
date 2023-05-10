@@ -8,8 +8,8 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
     let mut svg = format!("<svg width='90%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
 
     let mut y = 10.;
-    let factor = 1.3*tree.value / height;
-    let width = 0.985*width / 3.;
+    let factor = 1.4 * tree.value / height;
+    let width = 0.985 * 0.6 * width / 3.;
     let mut innercount = 0.;
     let mut middlecount = 0.;
     let mut outercount = 0.;
@@ -28,6 +28,11 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
 
         let value = tree.children[key].value;
 
+        let color = match major == highlight[0].as_str() {
+            false => "#ccc",
+            true => "#aaa",
+        };
+
         let label = format!("{major}");
         let mut state = DefaultHasher::new();
         label.hash(&mut state);
@@ -35,6 +40,7 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
         svg += ComponentBuilder::new(x, y, x + width - 10., y + outercount)
             .height(value / factor)
             .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
+            .body_color(color)
             .right_text(label.as_str())
             .data(
                 format!(
@@ -57,6 +63,11 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
 
             let value = tree.children[key].value;
 
+            let color = match major == highlight[0].as_str() && minor == highlight[1].as_str() {
+                false => "#ccc",
+                true => "#aaa",
+            };
+
             let label = format!("{major}.{minor}");
             let mut state = DefaultHasher::new();
             label.hash(&mut state);
@@ -64,6 +75,7 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
             svg += ComponentBuilder::new(x, y + outercount, x + width - 10., y + middlecount)
                 .height(value / factor)
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
+                .body_color(color)
                 .right_text(label.as_str())
                 .data(
                     format!(
@@ -86,6 +98,14 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
 
                 let value = tree.children[key].value;
 
+                let color = match major == highlight[0].as_str()
+                    && minor == highlight[1].as_str()
+                    && activity == highlight[2].as_str()
+                {
+                    false => "#ccc",
+                    true => "#aaa",
+                };
+
                 let label = format!("{major}.{minor}.{activity}");
                 let mut state = DefaultHasher::new();
                 label.hash(&mut state);
@@ -93,6 +113,7 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
                 svg += ComponentBuilder::new(x, y + middlecount, x + width - 10., y + innercount)
                     .height(value / factor)
                     .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
+                    .body_color(color)
                     .right_text(label.as_str())
                     .data(
                         format!(
