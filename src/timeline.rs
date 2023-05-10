@@ -47,7 +47,7 @@ pub fn draw_timeline(filename: &str, width: f64) -> String {
 
         current_day += 60 * 60 * 24;
 
-        if current_day + 60*60*24 > current_time {
+        if current_day + 60 * 60 * 24 > current_time {
             break;
         }
     }

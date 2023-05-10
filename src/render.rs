@@ -134,11 +134,30 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
         outercount += step;
     }
 
-    let mut state = DefaultHasher::new();
-    "all".hash(&mut state);
-    let hue = state.finish() % 360;
-    y -= 10.;
-    svg += format!("<rect x='0' y='10' width='10' height='{y}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
+    let ideal_proportions = vec![
+        ("chore".to_string(), 0.2),
+        ("entertainment".to_string(), 1.),
+        ("finance".to_string(), 0.5),
+        ("health".to_string(), 2.),
+        ("reading".to_string(), 0.5),
+        ("social".to_string(), 0.5),
+        ("work".to_string(), 2.),
+        ("writing".to_string(), 1.),
+    ];
+
+    let mut current = 10.;
+    let range = y - 10.;
+    let domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
+
+    for x in ideal_proportions {
+        let mut state = DefaultHasher::new();
+        x.0.hash(&mut state);
+        let hue = state.finish() % 360;
+        let height = x.1 / domain * range;
+        let label = x.0;
+        svg += format!("<rect x='0' y='{current}' width='10' height='{height}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
+        current += height;
+    }
 
     svg + "</svg>\n"
 }
