@@ -1,0 +1,14 @@
+.tooltip {
+  position: absolute;
+  padding: 5px 10px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.hover-highlight {
+  stroke-width: 2;
+  stroke: #333;
+  /* transition: all 0.2s ease; */
+}

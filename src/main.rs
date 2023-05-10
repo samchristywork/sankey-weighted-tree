@@ -47,6 +47,7 @@ async fn main() -> tide::Result<()> {
     app.at("/sankey").get(sankey);
     app.at("/timeline").get(timeline);
     app.at("/").get(index);
-    app.listen("127.0.0.1:8725").await?;
+    app.at("/").serve_dir("static/")?;
+    app.listen("127.0.0.1:8723").await?;
     Ok(())
 }

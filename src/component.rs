@@ -77,6 +77,8 @@ impl Component {
         .as_str();
 
         s += format!("M {} {}", top_left.x, top_left.y).as_str();
+
+        // Beziér curve across the top
         s += format!(
             "C {} {}, {} {}, {} {}",
             mx, top_left.y, mx, top_right.y, top_right.x, top_right.y
@@ -84,6 +86,8 @@ impl Component {
         .as_str();
 
         s += format!("L {} {}", bottom_right.x, bottom_right.y).as_str();
+
+        // Beziér curve across the bottom
         s += format!(
             "C {} {}, {} {}, {} {}",
             mx, bottom_right.y, mx, bottom_left.y, bottom_left.x, bottom_left.y
