@@ -4,8 +4,8 @@ use crate::tree_node::TreeNode;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-pub fn render_tree(tree: &TreeNode, width: f64, height: f64) -> String {
-    let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
+pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String; 3]) -> String {
+    let mut svg = format!("<svg width='90%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
 
     let mut y = 10.;
     let factor = 1.3*tree.value / height;
@@ -99,9 +99,13 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64) -> String {
     svg + "</svg>\n"
 }
 
-pub fn render_sankey(start_time: &String, end_time: &String, width: &String, height: &String) -> String {
-
-    let tree = parse_file(
+pub fn render_sankey(
+    start_time: &String,
+    end_time: &String,
+    width: &String,
+    height: &String,
+) -> String {
+    let (tree, current) = parse_file(
         "/home/sam/rofi_time_tracker/log",
         start_time.parse::<i64>().unwrap(),
         end_time.parse::<i64>().unwrap(),
@@ -111,6 +115,7 @@ pub fn render_sankey(start_time: &String, end_time: &String, width: &String, hei
         &tree,
         width.parse::<f64>().unwrap(),
         height.parse::<f64>().unwrap(),
+        current,
     );
 
     svg

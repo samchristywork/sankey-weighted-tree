@@ -19,7 +19,7 @@ pub fn draw_timeline(filename: &str, width: f64) -> String {
 
     let mut data: Vec<(Vec<Row>, i64)> = Vec::new();
     loop {
-        let tree = parse_file(filename, current_day, current_day + 60 * 60 * 24);
+        let (tree, _) = parse_file(filename, current_day, current_day + 60 * 60 * 24);
 
         if tree.children.len() == 0 {
             current_day += 60 * 60 * 24;

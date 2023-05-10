@@ -11,7 +11,7 @@ fn parse_line(line: &str) -> (i64, String) {
     (epoch, tag.to_string())
 }
 
-pub fn parse_file(filename: &str, begin: i64, end: i64) -> TreeNode {
+pub fn parse_file(filename: &str, begin: i64, end: i64) -> (TreeNode, [String; 3]) {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
@@ -42,7 +42,9 @@ pub fn parse_file(filename: &str, begin: i64, end: i64) -> TreeNode {
             activities.push((delta, activity));
         }
 
-        last_line = contents;
+        if contents.1 != "now.now.now" {
+            last_line = contents;
+        }
     }
 
     let mut tree = TreeNode {
@@ -58,5 +60,12 @@ pub fn parse_file(filename: &str, begin: i64, end: i64) -> TreeNode {
         tree.insert(major, minor, activity, time);
     }
 
-    tree
+    (
+        tree,
+        [
+            last_line.1.split('.').nth(0).unwrap().to_string(),
+            last_line.1.split('.').nth(1).unwrap().to_string(),
+            last_line.1.split('.').nth(2).unwrap().to_string(),
+        ],
+    )
 }
