@@ -18,6 +18,8 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
     let saturation = "50%";
     let lightness = "70%";
 
+    let total_day_length = tree.value;
+
     let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
     keys.sort();
     for key in keys {
@@ -34,7 +36,14 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
             .height(value / factor)
             .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
             .right_text(label.as_str())
-            .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
+            .data(
+                format!(
+                    "{label}: {:.2} minutes ({:.2}%)",
+                    value / 60.,
+                    value / total_day_length * 100.
+                )
+                .as_str(),
+            )
             .build()
             .draw()
             .as_str();
@@ -56,7 +65,14 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
                 .height(value / factor)
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                 .right_text(label.as_str())
-                .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
+                .data(
+                    format!(
+                        "{label}: {:.2} minutes ({:.2}%)",
+                        value / 60.,
+                        value / total_day_length * 100.
+                    )
+                    .as_str(),
+                )
                 .build()
                 .draw()
                 .as_str();
@@ -78,7 +94,14 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
                     .height(value / factor)
                     .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                     .right_text(label.as_str())
-                    .data(format!("{label}: {:.2} minutes", value / 60.).as_str())
+                    .data(
+                        format!(
+                            "{label}: {:.2} minutes ({:.2}%)",
+                            value / 60.,
+                            value / total_day_length * 100.
+                        )
+                        .as_str(),
+                    )
                     .build()
                     .draw()
                     .as_str();
