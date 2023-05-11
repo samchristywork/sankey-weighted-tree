@@ -78,6 +78,10 @@ async function get_sankey() {
   const text = await response.text();
   document.getElementById("app").innerHTML = text;
 
+  d3.selectAll("text").each(function() {
+    this.parentNode.appendChild(this);
+  });
+
   const hoverElements = document.querySelectorAll('.hover-element');
 
   const tooltip = document.getElementById('tooltip');
