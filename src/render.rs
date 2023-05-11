@@ -50,7 +50,7 @@ pub fn render_tree(
             .right_text(label.as_str())
             .data(
                 format!(
-                    "{label}: {:.2} minutes ({:.2}%)",
+                    "{label}: {:.3} minutes ({:.3}%)",
                     value / 60.,
                     value / total_day_length * 100.
                 )
@@ -85,7 +85,7 @@ pub fn render_tree(
                 .right_text(label.as_str())
                 .data(
                     format!(
-                        "{label}: {:.2} minutes ({:.2}%)",
+                        "{label}: {:.3} minutes ({:.3}%)",
                         value / 60.,
                         value / total_day_length * 100.
                     )
@@ -123,7 +123,7 @@ pub fn render_tree(
                     .right_text(label.as_str())
                     .data(
                         format!(
-                            "{label}: {:.2} minutes ({:.2}%)",
+                            "{label}: {:.3} minutes ({:.3}%)",
                             value / 60.,
                             value / total_day_length * 100.
                         )
