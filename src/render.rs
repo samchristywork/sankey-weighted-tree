@@ -134,17 +134,6 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
         outercount += step;
     }
 
-    let ideal_proportions = vec![
-        ("chore".to_string(), 0.2),
-        ("entertainment".to_string(), 1.),
-        ("finance".to_string(), 0.5),
-        ("health".to_string(), 2.),
-        ("reading".to_string(), 0.5),
-        ("social".to_string(), 0.5),
-        ("work".to_string(), 2.),
-        ("writing".to_string(), 1.),
-    ];
-
     let mut current = 10.;
     let range = y - 10.;
     let domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
@@ -160,6 +149,49 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
     }
 
     svg + "</svg>\n"
+}
+
+pub fn render_table(
+    start_time: &String,
+    end_time: &String,
+    ideal_proportions: &Vec<(String, f64)>,
+) -> String {
+    let (tree, current) = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        start_time.parse::<i64>().unwrap(),
+        end_time.parse::<i64>().unwrap(),
+    );
+
+    let mut out = String::from("<span class='stats-container'>");
+
+    let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
+    keys.sort();
+
+    let time_domain = keys
+        .iter()
+        .fold(0., |acc, x| tree.children[x.as_str()].value + acc);
+    let ideal_domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
+
+    for key in keys {
+        let mut ideal_value = 0.;
+        for ideal in ideal_proportions {
+            if key == ideal.0.as_str() {
+                ideal_value = 100. * ideal.1 / ideal_domain;
+            }
+        }
+        let actual_value = 100. * tree.children[key].value / time_domain;
+
+        let color = match actual_value > ideal_value {
+            false => "red",
+            true => "green",
+        };
+
+        out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
+        out += format!("<span style='color: {}'>{:.3}%</span>", color, actual_value,).as_str();
+        out += format!("<span style='color: {}'>{:.3}%</span>", color, ideal_value).as_str();
+    }
+
+    out + "</span>"
 }
 
 pub fn render_sankey(

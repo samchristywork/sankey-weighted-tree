@@ -8,6 +8,7 @@ pub mod tree_node;
 
 use parse::parse_file;
 use render::render_sankey;
+use render::render_table;
 use std::collections::HashMap;
 use tide::Request;
 use tide::Response;
@@ -38,7 +39,22 @@ async fn sankey(req: Request<()>) -> tide::Result {
     let end_time = query.get("end_time").unwrap();
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
-    Ok(render_sankey(start_time, end_time, width, height).into())
+
+    let ideal_proportions = vec![
+        ("chore".to_string(), 0.2),
+        ("entertainment".to_string(), 1.),
+        ("finance".to_string(), 0.5),
+        ("health".to_string(), 2.),
+        ("reading".to_string(), 0.5),
+        ("social".to_string(), 0.5),
+        ("task".to_string(), 0.2),
+        ("work".to_string(), 2.),
+        ("writing".to_string(), 0.5),
+    ];
+
+    let out = render_table(start_time, end_time, &ideal_proportions)
+        + render_sankey(start_time, end_time, width, height).as_str();
+    Ok(out.into())
 }
 
 #[async_std::main]
