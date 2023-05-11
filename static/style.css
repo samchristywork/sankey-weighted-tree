@@ -18,3 +18,14 @@ body {
   stroke: #ccc;
   /* transition: all 0.2s ease; */
 }
+
+#app {
+  display: grid;
+  grid-template-columns: 10fr 20fr;
+}
+
+.stats-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  height: 15rem;
+}
