@@ -104,11 +104,11 @@ impl Component {
 
         let font_size = 12.;
         s += format!(
-            "<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#222'>{text1}</text>\n",
+            "<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#eee'>{text1}</text>\n",
             left_text.x, left_text.y+font_size/4.
         )
         .as_str();
-        s += format!("<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#222' text-anchor='end'>{text2}</text>\n", right_text.x, right_text.y + font_size/4.).as_str();
+        s += format!("<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#eee' text-anchor='end'>{text2}</text>\n", right_text.x, right_text.y + font_size/4.).as_str();
 
         s
     }

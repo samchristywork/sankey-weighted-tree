@@ -1,3 +1,9 @@
+body {
+  background-color: black;
+  color: white;
+  margin: 0;
+}
+
 .tooltip {
   position: absolute;
   padding: 5px 10px;
@@ -9,6 +15,6 @@
 
 .hover-highlight {
   stroke-width: 2;
-  stroke: #333;
+  stroke: #ccc;
   /* transition: all 0.2s ease; */
 }

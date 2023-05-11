@@ -29,8 +29,8 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
         let value = tree.children[key].value;
 
         let color = match major == highlight[0].as_str() {
-            false => "#ccc",
-            true => "#aaa",
+            false => "#444",
+            true => "#222",
         };
 
         let label = format!("{major}");
@@ -64,8 +64,8 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
             let value = tree.children[key].value;
 
             let color = match major == highlight[0].as_str() && minor == highlight[1].as_str() {
-                false => "#ccc",
-                true => "#aaa",
+                false => "#444",
+                true => "#222",
             };
 
             let label = format!("{major}.{minor}");
@@ -102,8 +102,8 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
                     && minor == highlight[1].as_str()
                     && activity == highlight[2].as_str()
                 {
-                    false => "#ccc",
-                    true => "#aaa",
+                    false => "#444",
+                    true => "#222",
                 };
 
                 let label = format!("{major}.{minor}.{activity}");

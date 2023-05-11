@@ -52,9 +52,8 @@ pub fn draw_timeline(filename: &str, width: f64) -> String {
         }
     }
 
-    let saturation = "50%";
-    let lightness = "70%";
-    let height = 40.;
+    let saturation = "30%";
+    let lightness = "50%";
 
     let mut x = 0.;
     let x_step = width / data.len() as f64;
