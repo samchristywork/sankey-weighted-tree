@@ -77,7 +77,6 @@ pub fn render_tree(
             let label = format!("{major}.{minor}");
             let mut state = DefaultHasher::new();
             label.hash(&mut state);
-            let hue = state.finish() % 360;
             svg += ComponentBuilder::new(x, y + outercount, x + width - 10., y + middlecount)
                 .height(value / factor)
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
@@ -115,7 +114,6 @@ pub fn render_tree(
                 let label = format!("{major}.{minor}.{activity}");
                 let mut state = DefaultHasher::new();
                 label.hash(&mut state);
-                let hue = state.finish() % 360;
                 svg += ComponentBuilder::new(x, y + middlecount, x + width - 10., y + innercount)
                     .height(value / factor)
                     .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
