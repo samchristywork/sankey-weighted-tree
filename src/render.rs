@@ -4,19 +4,25 @@ use crate::tree_node::TreeNode;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String; 3]) -> String {
-    let mut svg = format!("<svg width='90%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
+pub fn render_tree(
+    tree: &TreeNode,
+    width: f64,
+    height: f64,
+    highlight: [String; 3],
+    ideal_proportions: &Vec<(String, f64)>,
+) -> String {
+    let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
 
     let mut y = 10.;
-    let factor = 1.4 * tree.value / height;
-    let width = 0.985 * 0.6 * width / 3.;
+    let factor = 1.6 * tree.value / height;
+    let width = 0.65 * width / 3.;
     let mut innercount = 0.;
     let mut middlecount = 0.;
     let mut outercount = 0.;
     let step = 5.;
 
-    let saturation = "50%";
-    let lightness = "70%";
+    let saturation = "30%";
+    let lightness = "50%";
 
     let total_day_length = tree.value;
 
@@ -143,8 +149,8 @@ pub fn render_tree(tree: &TreeNode, width: f64, height: f64, highlight: [String;
         x.0.hash(&mut state);
         let hue = state.finish() % 360;
         let height = x.1 / domain * range;
-        let label = x.0;
-        svg += format!("<rect x='0' y='{current}' width='10' height='{height}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
+        let label = &x.0;
+        svg += format!("<rect x='0' y='{current}' width='10' height='{height}' class='hover-element' data-tooltip='{label} ({:.3}%)' fill='hsl({hue}, {saturation}, {lightness})' />\n", x.1 / domain * 100.).as_str();
         current += height;
     }
 
@@ -199,6 +205,7 @@ pub fn render_sankey(
     end_time: &String,
     width: &String,
     height: &String,
+    ideal_proportions: &Vec<(String, f64)>,
 ) -> String {
     let (tree, current) = parse_file(
         "/home/sam/rofi_time_tracker/log",
@@ -211,6 +218,7 @@ pub fn render_sankey(
         width.parse::<f64>().unwrap(),
         height.parse::<f64>().unwrap(),
         current,
+        ideal_proportions,
     );
 
     svg

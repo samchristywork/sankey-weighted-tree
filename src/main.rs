@@ -55,7 +55,7 @@ async fn sankey(req: Request<()>) -> tide::Result {
     ];
 
     let out = render_table(start_time, end_time, &ideal_proportions)
-        + render_sankey(start_time, end_time, width, height).as_str();
+        + render_sankey(start_time, end_time, width, height, &ideal_proportions).as_str();
     Ok(out.into())
 }
 
