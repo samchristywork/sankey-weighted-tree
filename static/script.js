@@ -19,7 +19,8 @@ function changegraph(time) {
   a=time - period;
   b=time;
   clearInterval(interval);
-  get_chart();
+  get_timeline();
+  get_sankey();
 }
 
 async function getData() {
@@ -30,7 +31,8 @@ async function getData() {
       a=getStartOfDayTimestamp();
       b=current_time;
       clearInterval(interval);
-      get_chart();
+      get_timeline();
+      get_sankey();
       return;
     case "1-hour":
       period = 60*60;
@@ -61,7 +63,8 @@ async function getData() {
   b=current_time;
 
   clearInterval(interval);
-  get_chart();
+  get_timeline();
+  get_sankey();
 }
 
 async function get_timeline() {
@@ -105,9 +108,11 @@ async function get_sankey() {
   });
 }
 
-get_chart();
+
+get_timeline();
+get_sankey();
 let interval = setInterval(function() {
   a = getStartOfDayTimestamp();
   b = Math.floor(+(new Date())/1000);
-  get_chart();
+  get_sankey();
 }, 1000);
