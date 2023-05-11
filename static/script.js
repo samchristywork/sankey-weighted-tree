@@ -64,15 +64,15 @@ async function getData() {
   get_chart();
 }
 
-async function get_chart() {
+async function get_timeline() {
+  const response = await fetch("/timeline?width=" + window.innerWidth + "&height=" + "80");
+  const text = await response.text();
+  document.getElementById("timeline").innerHTML = text;
+}
+
+async function get_sankey() {
   let start_time = a;
   let end_time = b;
-
-  {
-    const response = await fetch("/timeline?width=" + window.innerWidth);
-    const text = await response.text();
-    document.getElementById("timeline").innerHTML = text;
-  }
 
   const response = await fetch("/sankey?start_time=" + start_time + "&end_time=" + end_time + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
   const text = await response.text();

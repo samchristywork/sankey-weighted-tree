@@ -26,9 +26,11 @@ async fn index(mut _req: Request<()>) -> tide::Result {
 async fn timeline(req: Request<()>) -> tide::Result {
     let query = req.query::<HashMap<String, String>>()?;
     let width = query.get("width").unwrap();
+    let height = query.get("height").unwrap();
     Ok(draw_timeline(
         "/home/sam/rofi_time_tracker/log",
         width.parse::<f64>().unwrap(),
+        height.parse::<f64>().unwrap(),
     )
     .into())
 }

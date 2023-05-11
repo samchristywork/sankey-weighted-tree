@@ -7,22 +7,23 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div>
-    <label for="period">Select Period:</label>
-    <select name="period" id="period" onchange="getData()">
-      <option value="today">Today</option>
-      <option value="24-hours">Daily</option>
-      <option value="1-hour">1 Hour</option>
-      <option value="6-hours">6 Hours</option>
-      <option value="12-hours">12 Hours</option>
-      <option value="weekly">Weekly</option>
-      <option value="monthly">Monthly</option>
-      <option value="yearly">Yearly</option>
-    </select>
-  </div>
   <div style="height: 98vh">
-    <div id="timeline" style="height: 5%"></div>
-    <div id="app" style="height: 95%"></div>
+    <div id="timeline" style="height: 90px"></div>
+    <div>
+      <label for="period">Select Period:</label>
+      <select name="period" id="period" onchange="getData()">
+        <option value="today">Today</option>
+        <option value="24-hours">Daily</option>
+        <option value="1-hour">1 Hour</option>
+        <option value="6-hours">6 Hours</option>
+        <option value="12-hours">12 Hours</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="yearly">Yearly</option>
+      </select>
+    </div>
+    <br>
+    <div id="app" style="height: 95%;"></div>
   </div>
 <div class="tooltip" id="tooltip" style="display: none;">Tooltip content</div>
 </body>

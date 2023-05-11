@@ -8,7 +8,7 @@ struct Row {
     delta: f64,
 }
 
-pub fn draw_timeline(filename: &str, width: f64) -> String {
+pub fn draw_timeline(filename: &str, width: f64, height: f64) -> String {
     let current_time = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
