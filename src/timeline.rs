@@ -1,4 +1,6 @@
 use crate::parse_file;
+use chrono::{DateTime, TimeZone};
+use chrono_tz::America::Chicago;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
@@ -64,9 +66,11 @@ pub fn draw_timeline(filename: &str, width: f64, height: f64) -> String {
     for column in data {
         let mut y = 0.;
 
-        let time = column.1;
+        let timestamp = column.1;
+
+        let time: DateTime<_> = Chicago.timestamp(timestamp, 0);
         svg += format!(
-            "<g class='hover-element' data-tooltip='{time}' onclick='changegraph({time});'>\n"
+            "<g class='hover-element' data-tooltip='{time}' onclick='changegraph({timestamp});'>\n"
         )
         .as_str();
         for row in column.0 {

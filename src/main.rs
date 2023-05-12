@@ -18,9 +18,9 @@ use tree_node::TreeNode;
 
 async fn index(mut _req: Request<()>) -> tide::Result {
     let output = include_str!("template.html");
-    let mut foo: Response = output.into();
-    foo.set_content_type("text/html");
-    Ok(foo)
+    let mut res: Response = output.into();
+    res.set_content_type("text/html");
+    Ok(res)
 }
 
 async fn timeline(req: Request<()>) -> tide::Result {

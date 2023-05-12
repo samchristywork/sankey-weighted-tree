@@ -19,6 +19,7 @@ impl TreeNode {
             self.children.insert(activity.to_string(), node);
         }
     }
+
     pub fn insert2(&mut self, minor: &str, activity: &str, time: f64) {
         self.value += time;
         if self.children.contains_key(minor) {
@@ -33,6 +34,7 @@ impl TreeNode {
             self.children.insert(minor.to_string(), node);
         }
     }
+
     pub fn insert(&mut self, major: &str, minor: &str, activity: &str, time: f64) {
         self.value += time;
         if self.children.contains_key(major) {
