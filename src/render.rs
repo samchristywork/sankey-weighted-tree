@@ -2,6 +2,7 @@ use crate::component_builder::ComponentBuilder;
 use crate::parse::parse_file;
 use crate::tree_node::TreeNode;
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 
 pub fn render_tree(
@@ -9,17 +10,18 @@ pub fn render_tree(
     width: f64,
     height: f64,
     highlight: [String; 3],
-    ideal_proportions: &Vec<(String, f64)>,
+    ideal_proportions: &HashMap<String, f64>,
 ) -> String {
     let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
 
     let mut y = 10.;
-    let factor = 1.6 * tree.value / height;
+    let factor = 1.9 * tree.value / height;
     let width = 0.65 * width / 3.;
     let mut innercount = 0.;
     let mut middlecount = 0.;
     let mut outercount = 0.;
-    let step = 5.;
+    let step = 10.;
+    let font_size = 1.2 * height / 100.;
 
     let saturation = "30%";
     let lightness = "50%";

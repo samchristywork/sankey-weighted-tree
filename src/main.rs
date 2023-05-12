@@ -42,17 +42,17 @@ async fn sankey(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
-    let ideal_proportions = vec![
-        ("chore".to_string(), 0.2),
-        ("entertainment".to_string(), 1.),
-        ("finance".to_string(), 0.5),
-        ("health".to_string(), 2.),
-        ("reading".to_string(), 0.5),
-        ("social".to_string(), 0.5),
-        ("task".to_string(), 0.2),
-        ("work".to_string(), 2.),
-        ("writing".to_string(), 0.5),
-    ];
+    let mut ideal_proportions: HashMap<String, f64> = HashMap::new();
+    ideal_proportions.insert("chore".to_string(), 2.4);
+    ideal_proportions.insert("entertainment".to_string(), 12.);
+    ideal_proportions.insert("finance".to_string(), 6.);
+    ideal_proportions.insert("health".to_string(), 24.);
+    ideal_proportions.insert("reading".to_string(), 6.);
+    ideal_proportions.insert("slop".to_string(), 10.);
+    ideal_proportions.insert("social".to_string(), 6.);
+    ideal_proportions.insert("task".to_string(), 2.4);
+    ideal_proportions.insert("work".to_string(), 30.);
+    ideal_proportions.insert("writing".to_string(), 6.);
 
     let start_time = start_time.parse::<i64>().unwrap();
     let end_time = end_time.parse::<i64>().unwrap();
