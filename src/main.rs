@@ -54,6 +54,11 @@ async fn sankey(req: Request<()>) -> tide::Result {
         ("writing".to_string(), 0.5),
     ];
 
+    let start_time = start_time.parse::<i64>().unwrap();
+    let end_time = end_time.parse::<i64>().unwrap();
+    let width = width.parse::<f64>().unwrap();
+    let height = height.parse::<f64>().unwrap();
+
     let out = render_table(start_time, end_time, &ideal_proportions)
         + render_sankey(start_time, end_time, width, height, &ideal_proportions).as_str();
     Ok(out.into())

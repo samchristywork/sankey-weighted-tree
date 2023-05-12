@@ -156,14 +156,14 @@ pub fn render_tree(
 }
 
 pub fn render_table(
-    start_time: &String,
-    end_time: &String,
-    ideal_proportions: &Vec<(String, f64)>,
+    start_timestamp: i64,
+    end_timestamp: i64,
+    ideal_proportions: &HashMap<String, f64>,
 ) -> String {
-    let (tree, current) = parse_file(
+    let (tree, _) = parse_file(
         "/home/sam/rofi_time_tracker/log",
-        start_time.parse::<i64>().unwrap(),
-        end_time.parse::<i64>().unwrap(),
+        start_timestamp,
+        end_timestamp,
     );
 
     let mut out = String::from("<span class='stats-container'>");
@@ -199,25 +199,19 @@ pub fn render_table(
 }
 
 pub fn render_sankey(
-    start_time: &String,
-    end_time: &String,
-    width: &String,
-    height: &String,
-    ideal_proportions: &Vec<(String, f64)>,
+    start_timestamp: i64,
+    end_timestamp: i64,
+    width: f64,
+    height: f64,
+    ideal_proportions: &HashMap<String, f64>,
 ) -> String {
     let (tree, current) = parse_file(
         "/home/sam/rofi_time_tracker/log",
-        start_time.parse::<i64>().unwrap(),
-        end_time.parse::<i64>().unwrap(),
+        start_timestamp,
+        end_timestamp,
     );
 
-    let svg = render_tree(
-        &tree,
-        width.parse::<f64>().unwrap(),
-        height.parse::<f64>().unwrap(),
-        current,
-        ideal_proportions,
-    );
+    let svg = render_tree(&tree, width, height, current, ideal_proportions);
 
     svg
 }

@@ -11,13 +11,17 @@ fn parse_line(line: &str) -> (i64, String) {
     (epoch, tag.to_string())
 }
 
-pub fn parse_file(filename: &str, begin: i64, end: i64) -> (TreeNode, [String; 3]) {
+pub fn parse_file(
+    filename: &str,
+    begin_timestamp: i64,
+    end_timestamp: i64,
+) -> (TreeNode, [String; 3]) {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
-    contents += format!("{}\tnow.now.now", end).as_str();
+    contents += format!("{}\tnow.now.now", end_timestamp).as_str();
     let mut lines = contents.lines();
 
     let mut last_line = parse_line(lines.next().unwrap());
@@ -28,12 +32,12 @@ pub fn parse_file(filename: &str, begin: i64, end: i64) -> (TreeNode, [String; 3
         let mut end_time = contents.0;
         let activity = last_line.1.clone();
 
-        if start_time < begin {
-            start_time = begin;
+        if start_time < begin_timestamp {
+            start_time = begin_timestamp;
         }
 
-        if end_time > end {
-            end_time = end;
+        if end_time > end_timestamp {
+            end_time = end_timestamp;
         }
 
         let delta = end_time - start_time;
