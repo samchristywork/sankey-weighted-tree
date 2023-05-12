@@ -155,13 +155,18 @@ pub fn render_tree(
     let range = y - 10.;
     let domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
 
-    for x in ideal_proportions {
+    let mut keys: Vec<&String> = ideal_proportions.keys().into_iter().collect();
+    keys.sort();
+
+    for key in keys {
+        let value = ideal_proportions[key];
+
         let mut state = DefaultHasher::new();
-        x.0.hash(&mut state);
+        key.hash(&mut state);
         let hue = state.finish() % 360;
-        let height = x.1 / domain * range;
-        let label = &x.0;
-        svg += format!("<rect x='0' y='{current}' width='10' height='{height}' class='hover-element' data-tooltip='{label} ({:.3}%)' fill='hsl({hue}, {saturation}, {lightness})' />\n", x.1 / domain * 100.).as_str();
+        let height = value / domain * range;
+        let label = &key;
+        svg += format!("<rect x='0' y='{current}' width='10' height='{height}' class='hover-element' data-tooltip='{label} ({:.3}%)' fill='hsl({hue}, {saturation}, {lightness})' />\n", value / domain * 100.).as_str();
         current += height;
     }
 
