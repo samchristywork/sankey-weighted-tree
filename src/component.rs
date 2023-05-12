@@ -9,6 +9,7 @@ pub struct Component {
     text1: String,
     text2: String,
     data: String,
+    font_size: f64,
 }
 
 impl Component {
@@ -22,6 +23,7 @@ impl Component {
             text1: "".to_string(),
             text2: "".to_string(),
             data: "".to_string(),
+            font_size: 12.,
         }
     }
 
@@ -47,6 +49,10 @@ impl Component {
 
     pub fn set_body_color(&mut self, color: String) {
         self.body_color = color;
+    }
+
+    pub fn set_font_size(&mut self, size: f64) {
+        self.font_size = size;
     }
 
     pub fn draw(&self) -> String {
@@ -102,7 +108,7 @@ impl Component {
         )
         .as_str();
 
-        let font_size = 12.;
+        let font_size = self.font_size;
         s += format!(
             "<text x='{}' y='{}' font-family='Verdana' font-size='{font_size}' fill='#eee'>{text1}</text>\n",
             left_text.x, left_text.y+font_size/4.

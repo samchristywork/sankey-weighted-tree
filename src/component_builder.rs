@@ -42,6 +42,11 @@ impl ComponentBuilder {
         self
     }
 
+    pub fn font_size(mut self, size: f64) -> ComponentBuilder {
+        self.component.set_font_size(size);
+        self
+    }
+
     pub fn build(self) -> Component {
         self.component
     }
