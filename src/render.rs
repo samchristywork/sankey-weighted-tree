@@ -5,6 +5,14 @@ use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 
+fn format_time(timestamp: i64) -> String {
+    let hours = timestamp / 3600;
+    let minutes = (timestamp % 3600) / 60;
+    let seconds = timestamp % 60;
+
+    format!("{}:{:02}:{:02}", hours, minutes, seconds)
+}
+
 pub fn render_tree(
     tree: &TreeNode,
     width: f64,
@@ -50,10 +58,11 @@ pub fn render_tree(
             .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
             .body_color(color)
             .right_text(label.as_str())
+            .font_size(font_size)
             .data(
                 format!(
-                    "{label}: {:.3} minutes ({:.3}%)",
-                    value / 60.,
+                    "{label}: {} ({:.3}%)",
+                    format_time(value as i64),
                     value / total_day_length * 100.
                 )
                 .as_str(),
@@ -84,10 +93,11 @@ pub fn render_tree(
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                 .body_color(color)
                 .right_text(label.as_str())
+                .font_size(font_size)
                 .data(
                     format!(
-                        "{label}: {:.3} minutes ({:.3}%)",
-                        value / 60.,
+                        "{label}: {} ({:.3}%)",
+                        format_time(value as i64),
                         value / total_day_length * 100.
                     )
                     .as_str(),
@@ -121,10 +131,11 @@ pub fn render_tree(
                     .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                     .body_color(color)
                     .right_text(label.as_str())
+                    .font_size(font_size)
                     .data(
                         format!(
-                            "{label}: {:.3} minutes ({:.3}%)",
-                            value / 60.,
+                            "{label}: {} ({:.3}%)",
+                            format_time(value as i64),
                             value / total_day_length * 100.
                         )
                         .as_str(),
