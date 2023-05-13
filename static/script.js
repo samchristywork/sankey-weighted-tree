@@ -71,6 +71,8 @@ async function get_timeline() {
   const response = await fetch("/timeline?width=" + window.innerWidth + "&height=" + "80");
   const text = await response.text();
   document.getElementById("timeline").innerHTML = text;
+
+  apply_hover();
 }
 
 async function get_sankey() {
@@ -85,6 +87,10 @@ async function get_sankey() {
     this.parentNode.appendChild(this);
   });
 
+  apply_hover();
+}
+
+function apply_hover() {
   const hoverElements = document.querySelectorAll('.hover-element');
 
   const tooltip = document.getElementById('tooltip');
