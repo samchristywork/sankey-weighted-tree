@@ -184,7 +184,8 @@ pub fn render_table(
         end_timestamp,
     );
 
-    let mut out = String::from("<span class='stats-container'>");
+    let mut out = String::from("<span>");
+    out += "<span class='stats-container'>";
 
     let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
     keys.sort();

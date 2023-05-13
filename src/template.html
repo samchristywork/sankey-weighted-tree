@@ -10,7 +10,10 @@
 <body>
   <div style="height: 98vh">
     <div id="timeline" style="height: 90px"></div>
-    <div>
+    <div id="app" style="height: 95%;"></div>
+  </div>
+  <div style='position: relative'>
+    <div style='position: absolute; bottom: 0'>
       <label for="period">Select Period:</label>
       <select name="period" id="period" onchange="getData()">
         <option value="today">Today</option>
@@ -24,7 +27,6 @@
       </select>
     </div>
     <br>
-    <div id="app" style="height: 95%;"></div>
   </div>
 <div class="tooltip" id="tooltip" style="display: none;">Tooltip content</div>
 </body>
