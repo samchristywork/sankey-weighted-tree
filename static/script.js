@@ -114,11 +114,10 @@ function apply_hover() {
   });
 }
 
-
 get_timeline();
 get_sankey();
 let interval = setInterval(function() {
   a = getStartOfDayTimestamp();
   b = Math.floor(+(new Date())/1000);
   get_sankey();
-}, 1000);
+}, 10000);
