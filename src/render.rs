@@ -199,7 +199,13 @@ pub fn render_table(
 
     for key in keys {
         let mut ideal_value = 0.;
-        ideal_value += 100. * ideal_proportions[key.as_str()] / ideal_domain;
+
+        let value = match ideal_proportions.get(key.as_str()) {
+            Some(x) => x,
+            None => continue,
+        };
+
+        ideal_value += 100. * value / ideal_domain;
         let actual_value = 100. * tree.children[key].value / time_domain;
 
         let color = match actual_value > ideal_value {
