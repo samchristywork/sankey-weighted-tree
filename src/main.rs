@@ -16,11 +16,26 @@ use tide::Response;
 use timeline::draw_timeline;
 use tree_node::TreeNode;
 
+fn get_ideal_proportions() -> HashMap<String, f64> {
+    let mut file = std::fs::File::open("/home/sam/rofi_time_tracker/ideals").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
+    let mut ideal_proportions: HashMap<String, f64> = HashMap::new();
+    for line in contents.lines() {
+        let mut split = line.split(" ");
+        let name = split.next().unwrap().to_string();
+        let proportion = split.next().unwrap().parse::<f64>().unwrap();
+        ideal_proportions.insert(name, proportion);
+    }
+
+    ideal_proportions
+}
 
 async fn index(mut _req: Request<()>) -> tide::Result {
     let output = include_str!("template.html");
     let mut res: Response = output.into();
     res.set_content_type("text/html");
+
     Ok(res)
 }
 
@@ -28,7 +43,11 @@ async fn timeline(req: Request<()>) -> tide::Result {
     let query = req.query::<HashMap<String, String>>()?;
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
+
+    let ideal_proportions = get_ideal_proportions();
+
     Ok(draw_timeline(
+        &ideal_proportions,
         "/home/sam/rofi_time_tracker/log",
         width.parse::<f64>().unwrap(),
         height.parse::<f64>().unwrap(),
@@ -43,16 +62,7 @@ async fn sankey(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
-    let mut file = std::fs::File::open("/home/sam/rofi_time_tracker/ideals").unwrap();
-    let mut contents = String::new();
-    file.read_to_string(&mut contents).unwrap();
-    let mut ideal_proportions: HashMap<String, f64> = HashMap::new();
-    for line in contents.lines() {
-        let mut split = line.split(" ");
-        let name = split.next().unwrap().to_string();
-        let proportion = split.next().unwrap().parse::<f64>().unwrap();
-        ideal_proportions.insert(name, proportion);
-    }
+    let ideal_proportions = get_ideal_proportions();
 
     let start_time = start_time.parse::<i64>().unwrap();
     let end_time = end_time.parse::<i64>().unwrap();
