@@ -1,7 +1,9 @@
 use crate::parse_file;
+use crate::render::get_points;
 use chrono::{DateTime, TimeZone};
 use chrono_tz::America::Chicago;
 use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
 use std::hash::Hash;
 use std::hash::Hasher;
 
@@ -24,7 +26,7 @@ pub fn draw_timeline(
     let start_of_first_day = 1672552800;
     let mut current_day = start_of_first_day;
 
-    let mut data: Vec<(Vec<Row>, i64)> = Vec::new();
+    let mut data: Vec<(Vec<Row>, i64, f64)> = Vec::new();
     loop {
         let (tree, _) = parse_file(filename, current_day, current_day + 60 * 60 * 24);
 
@@ -50,6 +52,7 @@ pub fn draw_timeline(
                 })
                 .collect(),
             current_day,
+            get_points(&tree, ideal_proportions),
         ));
 
         current_day += 60 * 60 * 24;
@@ -73,9 +76,11 @@ pub fn draw_timeline(
 
         let timestamp = column.1;
 
+        let points = format!("{:.3} points", column.2);
+
         let time: DateTime<_> = Chicago.timestamp(timestamp, 0);
         svg += format!(
-            "<g class='hover-element' data-tooltip='{time}' onclick='changegraph({timestamp});'>\n"
+            "<g class='hover-element' data-tooltip='{time}<br>{points}' onclick='changegraph({timestamp});'>\n"
         )
         .as_str();
         for row in column.0 {
