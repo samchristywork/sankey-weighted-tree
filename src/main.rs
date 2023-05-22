@@ -10,6 +10,7 @@ use parse::parse_file;
 use render::render_sankey;
 use render::render_table;
 use std::collections::HashMap;
+use std::io::Read;
 use tide::Request;
 use tide::Response;
 use timeline::draw_timeline;
@@ -42,17 +43,16 @@ async fn sankey(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
+    let mut file = std::fs::File::open("/home/sam/rofi_time_tracker/ideals").unwrap();
+    let mut contents = String::new();
+    file.read_to_string(&mut contents).unwrap();
     let mut ideal_proportions: HashMap<String, f64> = HashMap::new();
-    ideal_proportions.insert("chore".to_string(), 2.4);
-    ideal_proportions.insert("entertainment".to_string(), 12.);
-    ideal_proportions.insert("finance".to_string(), 6.);
-    ideal_proportions.insert("health".to_string(), 24.);
-    ideal_proportions.insert("reading".to_string(), 6.);
-    ideal_proportions.insert("slop".to_string(), 10.);
-    ideal_proportions.insert("social".to_string(), 6.);
-    ideal_proportions.insert("task".to_string(), 2.4);
-    ideal_proportions.insert("work".to_string(), 30.);
-    ideal_proportions.insert("writing".to_string(), 6.);
+    for line in contents.lines() {
+        let mut split = line.split(" ");
+        let name = split.next().unwrap().to_string();
+        let proportion = split.next().unwrap().parse::<f64>().unwrap();
+        ideal_proportions.insert(name, proportion);
+    }
 
     let start_time = start_time.parse::<i64>().unwrap();
     let end_time = end_time.parse::<i64>().unwrap();
