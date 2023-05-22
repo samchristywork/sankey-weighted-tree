@@ -173,6 +173,42 @@ pub fn render_tree(
     svg + "</svg>\n"
 }
 
+pub fn get_points(tree: &TreeNode, ideal_proportions: &HashMap<String, f64>) -> f64 {
+    let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
+    keys.sort();
+
+    let time_domain = keys
+        .iter()
+        .fold(0., |acc, x| tree.children[x.as_str()].value + acc);
+    let ideal_domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
+
+    let mut points = 0.;
+    for key in keys {
+        let mut ideal_value = 0.;
+
+        let value = match ideal_proportions.get(key.as_str()) {
+            Some(x) => x,
+            None => continue,
+        };
+
+        ideal_value += 100. * value / ideal_domain;
+        let actual_value = 100. * tree.children[key].value / time_domain;
+
+        match actual_value > ideal_value {
+            false => {
+                points += actual_value;
+            }
+            true => {
+                points += ideal_value;
+            }
+        };
+    }
+
+    points += ideal_proportions["slop"];
+
+    points
+}
+
 pub fn render_table(
     start_timestamp: i64,
     end_timestamp: i64,
@@ -207,12 +243,8 @@ pub fn render_table(
         let actual_value = 100. * tree.children[key].value / time_domain;
 
         let color = match actual_value > ideal_value {
-            false => {
-                "red"
-            }
-            true => {
-                "green"
-            }
+            false => "red",
+            true => "green",
         };
 
         out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
@@ -220,35 +252,11 @@ pub fn render_table(
         out += format!("<span style='color: {}'>{:.3}%</span>", color, ideal_value).as_str();
     }
 
-    let mut points = 0.;
-    for key in keys {
-        let mut ideal_value = 0.;
-
-        let value = match ideal_proportions.get(key.as_str()) {
-            Some(x) => x,
-            None => continue,
-        };
-
-        ideal_value += 100. * value / ideal_domain;
-        let actual_value = 100. * tree.children[key].value / time_domain;
-
-        match actual_value > ideal_value {
-            false => {
-                points += actual_value;
-            }
-            true => {
-                points += ideal_value;
-            }
-        };
-    }
-
-    points += ideal_proportions["slop"];
-
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
 
-    out += format!("{:.3} points", points).as_str();
+    out += format!("{:.3} points", get_points(&tree, ideal_proportions)).as_str();
 
     out += "</span>";
 
