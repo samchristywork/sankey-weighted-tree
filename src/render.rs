@@ -195,9 +195,7 @@ pub fn render_table(
         .fold(0., |acc, x| tree.children[x.as_str()].value + acc);
     let ideal_domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
 
-    let mut points = 0.;
-
-    for key in keys {
+    for key in keys.clone() {
         let mut ideal_value = 0.;
 
         let value = match ideal_proportions.get(key.as_str()) {
@@ -210,11 +208,9 @@ pub fn render_table(
 
         let color = match actual_value > ideal_value {
             false => {
-                points += actual_value;
                 "red"
             }
             true => {
-                points += ideal_value;
                 "green"
             }
         };
@@ -222,6 +218,28 @@ pub fn render_table(
         out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
         out += format!("<span style='color: {}'>{:.3}%</span>", color, actual_value,).as_str();
         out += format!("<span style='color: {}'>{:.3}%</span>", color, ideal_value).as_str();
+    }
+
+    let mut points = 0.;
+    for key in keys {
+        let mut ideal_value = 0.;
+
+        let value = match ideal_proportions.get(key.as_str()) {
+            Some(x) => x,
+            None => continue,
+        };
+
+        ideal_value += 100. * value / ideal_domain;
+        let actual_value = 100. * tree.children[key].value / time_domain;
+
+        match actual_value > ideal_value {
+            false => {
+                points += actual_value;
+            }
+            true => {
+                points += ideal_value;
+            }
+        };
     }
 
     points += ideal_proportions["slop"];
