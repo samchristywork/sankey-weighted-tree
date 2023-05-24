@@ -214,7 +214,7 @@ pub fn render_table(
     end_timestamp: i64,
     ideal_proportions: &HashMap<String, f64>,
 ) -> String {
-    let (tree, _) = parse_file(
+    let (tree, current, _) = parse_file(
         "/home/sam/rofi_time_tracker/log",
         start_timestamp,
         end_timestamp,
@@ -254,9 +254,22 @@ pub fn render_table(
             true => "green",
         };
 
+        let weight = match current[0] == key.as_str() {
+            false => "normal",
+            true => "bold",
+        };
+
         let percent_complete = 100. * actual_value / ideal_value;
 
-        table_values.push((key, actual_value, ideal_value, color, percent_complete));
+        table_values.push((
+            key,
+            actual_value,
+            ideal_value,
+            color,
+            percent_complete,
+            weight,
+            tree.children[key].value,
+        ));
     }
 
     table_values.sort_by(|a, b| a.4.partial_cmp(&b.4).unwrap());
@@ -267,6 +280,8 @@ pub fn render_table(
         let ideal_value = value.2;
         let color = value.3;
         let percent_complete = value.4;
+        let weight = value.5;
+        let duration = value.6;
 
         out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
         out += format!("<span style='color: {}'>{:.3}%</span>", color, actual_value,).as_str();
