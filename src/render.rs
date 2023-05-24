@@ -24,7 +24,7 @@ pub fn render_tree(
 
     let mut y = 10.;
     let factor = 1.9 * tree.value / height;
-    let width = 0.65 * width / 3.;
+    let width = 0.47 * width / 3.;
     let mut innercount = 0.;
     let mut middlecount = 0.;
     let mut outercount = 0.;
@@ -340,6 +340,41 @@ pub fn render_sankey(
     );
 
     let svg = render_tree(&tree, width, height, current, ideal_proportions);
+
+    svg
+}
+
+pub fn render_band(start_timestamp: i64, end_timestamp: i64, width: f64, height: f64) -> String {
+    let (_, _, band) = parse_file(
+        "/home/sam/rofi_time_tracker/log",
+        start_timestamp,
+        end_timestamp,
+    );
+
+    let total= band.iter().fold(0, |acc, x| acc + x.0) as f64;
+
+    let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
+    let mut y = 0.;
+    let x = 0.;
+    for (duration, name) in band {
+        let mut state = DefaultHasher::new();
+        name.split(".").nth(0).unwrap().
+            .hash(&mut state);
+        let hue = state.finish() % 360;
+        let color = format!("hsl({}, 30%, 50%)", hue);
+
+        let width = width;
+        let height = duration as f64/total*height;
+
+        svg += format!(
+            "<rect x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
+            x, y, width, height, color
+        )
+        .as_str();
+
+        y += height;
+    }
+    svg += "</svg>";
 
     svg
 }
