@@ -226,6 +226,7 @@ pub fn render_table(
     out += format!("<span>Category</span>").as_str();
     out += format!("<span>Actual</span>").as_str();
     out += format!("<span>Ideal</span>").as_str();
+    out += format!("<span>Comp.</span>").as_str();
     out += format!("<span>Ratio</span>").as_str();
 
     let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
@@ -283,16 +284,36 @@ pub fn render_table(
         let weight = value.5;
         let duration = value.6;
 
-        out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
-        out += format!("<span style='color: {}'>{:.3}%</span>", color, actual_value,).as_str();
-        out += format!("<span style='color: {}'>{:.3}%</span>", color, ideal_value).as_str();
         out += format!(
-            "<span style='color: {}'>{:.3}%</span>",
-            color, percent_complete
+            "<span style='font-weight: {}; color: {}'> {}</span>",
+            weight, color, key,
+        )
+        .as_str();
+        out += format!(
+            "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
+            weight, color, actual_value,
+        )
+        .as_str();
+        out += format!(
+            "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
+            weight, color, ideal_value
+        )
+        .as_str();
+        out += format!(
+            "<span style='font-weight: {}; color: {}'>{}</span>",
+            weight,
+            color,
+            format_time(duration as i64)
+        )
+        .as_str();
+        out += format!(
+            "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
+            weight, color, percent_complete
         )
         .as_str();
     }
 
+    out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
