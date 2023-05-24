@@ -231,6 +231,8 @@ pub fn render_table(
         .fold(0., |acc, x| tree.children[x.as_str()].value + acc);
     let ideal_domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
 
+    let mut table_values = Vec::new();
+
     for key in keys.clone() {
         let mut ideal_value = 0.;
 
@@ -246,6 +248,15 @@ pub fn render_table(
             false => "red",
             true => "green",
         };
+
+        table_values.push((key, actual_value, ideal_value, color));
+    }
+
+    for value in table_values {
+        let key = value.0;
+        let actual_value = value.1;
+        let ideal_value = value.2;
+        let color = value.3;
 
         out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
         out += format!("<span style='color: {}'>{:.3}%</span>", color, actual_value,).as_str();
