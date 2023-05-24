@@ -15,7 +15,7 @@ pub fn parse_file(
     filename: &str,
     begin_timestamp: i64,
     end_timestamp: i64,
-) -> (TreeNode, [String; 3]) {
+) -> (TreeNode, [String; 3], Vec<(i64, String)>) {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
@@ -71,5 +71,6 @@ pub fn parse_file(
             last_line.1.split('.').nth(1).unwrap().to_string(),
             last_line.1.split('.').nth(2).unwrap().to_string(),
         ],
+        activities,
     )
 }

@@ -297,7 +297,7 @@ pub fn render_sankey(
     height: f64,
     ideal_proportions: &HashMap<String, f64>,
 ) -> String {
-    let (tree, current) = parse_file(
+    let (tree, current, _) = parse_file(
         "/home/sam/rofi_time_tracker/log",
         start_timestamp,
         end_timestamp,
