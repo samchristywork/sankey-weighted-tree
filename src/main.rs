@@ -81,6 +81,6 @@ async fn main() -> tide::Result<()> {
     app.at("/timeline").get(timeline);
     app.at("/").get(index);
     app.at("/").serve_dir("static/")?;
-    app.listen("127.0.0.1:8723").await?;
+    app.listen("0.0.0.0:8723").await?;
     Ok(())
 }
