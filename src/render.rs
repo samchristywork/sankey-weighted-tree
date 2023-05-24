@@ -276,6 +276,7 @@ pub fn render_table(
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
+    out += format!("<span></span>").as_str();
 
     out += format!("{:.3} points", get_points(&tree, ideal_proportions)).as_str();
 
