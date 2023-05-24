@@ -227,6 +227,7 @@ pub fn render_table(
     out += format!("<span>Actual</span>").as_str();
     out += format!("<span>Ideal</span>").as_str();
     out += format!("<span>Comp.</span>").as_str();
+    out += format!("<span>Pred.</span>").as_str();
     out += format!("<span>Ratio</span>").as_str();
 
     let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
@@ -307,12 +308,20 @@ pub fn render_table(
         )
         .as_str();
         out += format!(
+            "<span style='font-weight: {}; color: {}'>{}</span>",
+            weight,
+            color,
+            format_time((ideal_value / 100. * 16. * 60. * 60.) as i64)
+        )
+        .as_str();
+        out += format!(
             "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
             weight, color, percent_complete
         )
         .as_str();
     }
 
+    out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
     out += format!("<span></span>").as_str();
