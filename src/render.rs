@@ -223,6 +223,11 @@ pub fn render_table(
     let mut out = String::from("<span>");
     out += "<span class='stats-container'>";
 
+    out += format!("<span>Category</span>").as_str();
+    out += format!("<span>Actual</span>").as_str();
+    out += format!("<span>Ideal</span>").as_str();
+    out += format!("<span>Ratio</span>").as_str();
+
     let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
     keys.sort();
 
