@@ -249,7 +249,9 @@ pub fn render_table(
             true => "green",
         };
 
-        table_values.push((key, actual_value, ideal_value, color));
+        let percent_complete = 100. * actual_value / ideal_value;
+
+        table_values.push((key, actual_value, ideal_value, color, percent_complete));
     }
 
     table_values.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
@@ -259,10 +261,16 @@ pub fn render_table(
         let actual_value = value.1;
         let ideal_value = value.2;
         let color = value.3;
+        let percent_complete = value.4;
 
         out += format!("<span style='color: {}'> {}</span>", color, key,).as_str();
         out += format!("<span style='color: {}'>{:.3}%</span>", color, actual_value,).as_str();
         out += format!("<span style='color: {}'>{:.3}%</span>", color, ideal_value).as_str();
+        out += format!(
+            "<span style='color: {}'>{:.3}%</span>",
+            color, percent_complete
+        )
+        .as_str();
     }
 
     out += format!("<span></span>").as_str();
