@@ -254,7 +254,7 @@ pub fn render_table(
         table_values.push((key, actual_value, ideal_value, color, percent_complete));
     }
 
-    table_values.sort_by(|a, b| a.2.partial_cmp(&b.2).unwrap());
+    table_values.sort_by(|a, b| a.4.partial_cmp(&b.4).unwrap());
 
     for value in table_values {
         let key = value.0;
