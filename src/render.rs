@@ -367,7 +367,7 @@ pub fn render_band(start_timestamp: i64, end_timestamp: i64, width: f64, height:
     let x = 0.;
     for (duration, name) in band {
         let mut state = DefaultHasher::new();
-        name.split(".").nth(0).unwrap().
+        name.split(".").nth(0).unwrap().to_string()
             .hash(&mut state);
         let hue = state.finish() % 360;
         let color = format!("hsl({}, 30%, 50%)", hue);
