@@ -7,6 +7,7 @@ pub mod timeline;
 pub mod tree_node;
 
 use parse::parse_file;
+use render::render_band;
 use render::render_sankey;
 use render::render_table;
 use std::collections::HashMap;
@@ -74,10 +75,27 @@ async fn sankey(req: Request<()>) -> tide::Result {
     Ok(out.into())
 }
 
+async fn band(req: Request<()>) -> tide::Result {
+    let query = req.query::<HashMap<String, String>>()?;
+    let start_time = query.get("start_time").unwrap();
+    let end_time = query.get("end_time").unwrap();
+    let width = query.get("width").unwrap();
+    let height = query.get("height").unwrap();
+
+    let start_time = start_time.parse::<i64>().unwrap();
+    let end_time = end_time.parse::<i64>().unwrap();
+    let width = width.parse::<f64>().unwrap();
+    let height = height.parse::<f64>().unwrap();
+
+    let out = render_band(start_time, end_time, width, height);
+    Ok(out.into())
+}
+
 #[async_std::main]
 async fn main() -> tide::Result<()> {
     let mut app = tide::new();
     app.at("/sankey").get(sankey);
+    app.at("/band").get(band);
     app.at("/timeline").get(timeline);
     app.at("/").get(index);
     app.at("/").serve_dir("static/")?;
