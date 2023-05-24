@@ -376,7 +376,9 @@ pub fn render_band(start_timestamp: i64, end_timestamp: i64, width: f64, height:
         let height = duration as f64/total*height;
 
         svg += format!(
-            "<rect x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
+            "<rect class='hover-element' data-tooltip='{}<br>{}' x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
+            name,
+            format_time(duration),
             x, y, width, height, color
         )
         .as_str();
