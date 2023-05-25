@@ -57,7 +57,12 @@ async fn timeline(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
-    let ideal_proportions = get_ideal_proportions(0);
+    let now = std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .unwrap()
+        .as_secs();
+
+    let ideal_proportions = get_ideal_proportions(now);
 
     Ok(draw_timeline(
         &ideal_proportions,
