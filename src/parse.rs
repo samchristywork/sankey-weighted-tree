@@ -15,7 +15,7 @@ pub fn parse_file(
     filename: &str,
     begin_timestamp: u64,
     end_timestamp: u64,
-) -> (TreeNode, [String; 3], Vec<(u64, String)>) {
+) -> (TreeNode, [String; 3], Vec<(u64, i64, String)>) {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
@@ -43,7 +43,7 @@ pub fn parse_file(
         let delta = end_time as i64 - start_time as i64;
 
         if delta > 0 && activity != "health.rest.sleep" {
-            activities.push((delta, activity));
+            activities.push((start_time, delta, activity));
         }
 
         if contents.1 != "now.now.now" {
@@ -57,10 +57,10 @@ pub fn parse_file(
     };
 
     for activity in &activities {
-        let time = activity.0 as f64;
-        let major = activity.1.split('.').nth(0).unwrap();
-        let minor = activity.1.split('.').nth(1).unwrap();
-        let activity = activity.1.split('.').nth(2).unwrap();
+        let time = activity.1 as f64;
+        let major = activity.2.split('.').nth(0).unwrap();
+        let minor = activity.2.split('.').nth(1).unwrap();
+        let activity = activity.2.split('.').nth(2).unwrap();
         tree.insert(major, minor, activity, time);
     }
 

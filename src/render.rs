@@ -360,15 +360,14 @@ pub fn render_band(start_timestamp: u64, end_timestamp: u64, width: f64, height:
         end_timestamp,
     );
 
-    let total= band.iter().fold(0, |acc, x| acc + x.0) as f64;
+    let total = band.iter().fold(1, |acc, x| acc + x.1) as f64;
 
     let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
     let mut y = 0.;
     let x = 0.;
-    for (duration, name) in band {
+    for (timestamp, duration, name) in band {
         let mut state = DefaultHasher::new();
-        name.split(".").nth(0).unwrap().to_string()
-            .hash(&mut state);
+        name.split(".").nth(0).unwrap().to_string().hash(&mut state);
         let hue = state.finish() % 360;
         let color = format!("hsl({}, 30%, 50%)", hue);
 
