@@ -23,6 +23,10 @@ fn get_ideal_proportions(timestamp: u64) -> HashMap<String, f64> {
     file.read_to_string(&mut contents).unwrap();
     let mut ideal_proportions: HashMap<String, f64> = HashMap::new();
     for line in contents.lines() {
+        if line.len() == 0 {
+            continue;
+        }
+
         let len = line.split(" ").count();
         let mut split = line.split(" ");
         match len {
