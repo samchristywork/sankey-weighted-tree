@@ -21,6 +21,7 @@ function changegraph(time) {
   clearInterval(interval);
   get_timeline();
   get_sankey();
+  get_band();
 }
 
 async function getData() {
@@ -33,6 +34,7 @@ async function getData() {
       clearInterval(interval);
       get_timeline();
       get_sankey();
+      get_band();
       return;
     case "1-hour":
       period = 60*60;
@@ -65,6 +67,7 @@ async function getData() {
   clearInterval(interval);
   get_timeline();
   get_sankey();
+  get_band();
 }
 
 async function get_timeline() {
@@ -86,6 +89,17 @@ async function get_sankey() {
   d3.selectAll("text").each(function() {
     this.parentNode.appendChild(this);
   });
+
+  apply_hover();
+}
+
+async function get_band() {
+  let start_time = a;
+  let end_time = b;
+
+  const response = await fetch("/band?start_time=" + start_time + "&end_time=" + end_time + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
+  const text = await response.text();
+  document.getElementById("band").innerHTML = text;
 
   apply_hover();
 }
@@ -116,8 +130,10 @@ function apply_hover() {
 
 get_timeline();
 get_sankey();
+get_band();
 let interval = setInterval(function() {
   a = getStartOfDayTimestamp();
   b = Math.floor(+(new Date())/1000);
   get_sankey();
+  get_band();
 }, 10000);
