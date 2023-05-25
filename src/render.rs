@@ -1,6 +1,8 @@
 use crate::component_builder::ComponentBuilder;
 use crate::parse::parse_file;
 use crate::tree_node::TreeNode;
+use chrono::{DateTime, TimeZone};
+use chrono_tz::America::Chicago;
 use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
@@ -374,9 +376,11 @@ pub fn render_band(start_timestamp: u64, end_timestamp: u64, width: f64, height:
         let width = width;
         let height = 0.9 * duration as f64 / total * height;
 
+        let time: DateTime<_> = Chicago.timestamp(timestamp as i64, 0);
         svg += format!(
-            "<rect class='hover-element' data-tooltip='{}<br>{}' x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
+            "<rect class='hover-element' data-tooltip='{}<br>{}<br>{}' x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
             name,
+            time,
             format_time(duration as u64),
             x, y, width, height, color
         )
