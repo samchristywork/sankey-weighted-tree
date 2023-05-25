@@ -17,16 +17,28 @@ use tide::Response;
 use timeline::draw_timeline;
 use tree_node::TreeNode;
 
-fn get_ideal_proportions() -> HashMap<String, f64> {
+fn get_ideal_proportions(timestamp: u64) -> HashMap<String, f64> {
     let mut file = std::fs::File::open("/home/sam/rofi_time_tracker/ideals").unwrap();
     let mut contents = String::new();
     file.read_to_string(&mut contents).unwrap();
     let mut ideal_proportions: HashMap<String, f64> = HashMap::new();
     for line in contents.lines() {
+        let len = line.split(" ").count();
         let mut split = line.split(" ");
-        let name = split.next().unwrap().to_string();
-        let proportion = split.next().unwrap().parse::<f64>().unwrap();
-        ideal_proportions.insert(name, proportion);
+        match len {
+            1 => match split.next().unwrap().parse::<u64>().unwrap() < timestamp {
+                true => {
+                    ideal_proportions = HashMap::new();
+                }
+                false => return ideal_proportions,
+            },
+            2 => {
+                let name = split.next().unwrap().to_string();
+                let ideal_proportion = split.next().unwrap().parse::<f64>().unwrap();
+                ideal_proportions.insert(name, ideal_proportion);
+            }
+            _ => panic!("Invalid ideal file"),
+        }
     }
 
     ideal_proportions
@@ -45,7 +57,7 @@ async fn timeline(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
-    let ideal_proportions = get_ideal_proportions();
+    let ideal_proportions = get_ideal_proportions(0);
 
     Ok(draw_timeline(
         &ideal_proportions,
@@ -68,7 +80,7 @@ async fn sankey(req: Request<()>) -> tide::Result {
     let width = width.parse::<f64>().unwrap();
     let height = height.parse::<f64>().unwrap();
 
-    let ideal_proportions = get_ideal_proportions();
+    let ideal_proportions = get_ideal_proportions(start_time);
 
     let out = render_table(start_time, end_time, &ideal_proportions)
         + render_sankey(start_time, end_time, width, height, &ideal_proportions).as_str();
