@@ -63,12 +63,12 @@ async fn sankey(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
-    let ideal_proportions = get_ideal_proportions();
-
-    let start_time = start_time.parse::<i64>().unwrap();
-    let end_time = end_time.parse::<i64>().unwrap();
+    let start_time = start_time.parse::<u64>().unwrap();
+    let end_time = end_time.parse::<u64>().unwrap();
     let width = width.parse::<f64>().unwrap();
     let height = height.parse::<f64>().unwrap();
+
+    let ideal_proportions = get_ideal_proportions();
 
     let out = render_table(start_time, end_time, &ideal_proportions)
         + render_sankey(start_time, end_time, width, height, &ideal_proportions).as_str();
@@ -82,8 +82,8 @@ async fn band(req: Request<()>) -> tide::Result {
     let width = query.get("width").unwrap();
     let height = query.get("height").unwrap();
 
-    let start_time = start_time.parse::<i64>().unwrap();
-    let end_time = end_time.parse::<i64>().unwrap();
+    let start_time = start_time.parse::<u64>().unwrap();
+    let end_time = end_time.parse::<u64>().unwrap();
     let width = width.parse::<f64>().unwrap();
     let height = height.parse::<f64>().unwrap();
 

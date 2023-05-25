@@ -5,7 +5,7 @@ use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 
-fn format_time(timestamp: i64) -> String {
+fn format_time(timestamp: u64) -> String {
     let hours = timestamp / 3600;
     let minutes = (timestamp % 3600) / 60;
     let seconds = timestamp % 60;
@@ -62,7 +62,7 @@ pub fn render_tree(
             .data(
                 format!(
                     "{label}: {} ({:.3}%)",
-                    format_time(value as i64),
+                    format_time(value as u64),
                     value / total_day_length * 100.
                 )
                 .as_str(),
@@ -97,7 +97,7 @@ pub fn render_tree(
                 .data(
                     format!(
                         "{label}: {} ({:.3}%)",
-                        format_time(value as i64),
+                        format_time(value as u64),
                         value / total_day_length * 100.
                     )
                     .as_str(),
@@ -135,7 +135,7 @@ pub fn render_tree(
                     .data(
                         format!(
                             "{label}: {} ({:.3}%)",
-                            format_time(value as i64),
+                            format_time(value as u64),
                             value / total_day_length * 100.
                         )
                         .as_str(),
@@ -210,8 +210,8 @@ pub fn get_points(tree: &TreeNode, ideal_proportions: &HashMap<String, f64>) -> 
 }
 
 pub fn render_table(
-    start_timestamp: i64,
-    end_timestamp: i64,
+    start_timestamp: u64,
+    end_timestamp: u64,
     ideal_proportions: &HashMap<String, f64>,
 ) -> String {
     let (tree, current, _) = parse_file(
@@ -304,14 +304,14 @@ pub fn render_table(
             "<span style='font-weight: {}; color: {}'>{}</span>",
             weight,
             color,
-            format_time(duration as i64)
+            format_time(duration as u64)
         )
         .as_str();
         out += format!(
             "<span style='font-weight: {}; color: {}'>{}</span>",
             weight,
             color,
-            format_time((ideal_value / 100. * 16. * 60. * 60.) as i64)
+            format_time((ideal_value / 100. * 16. * 60. * 60.) as u64)
         )
         .as_str();
         out += format!(
@@ -336,8 +336,8 @@ pub fn render_table(
 }
 
 pub fn render_sankey(
-    start_timestamp: i64,
-    end_timestamp: i64,
+    start_timestamp: u64,
+    end_timestamp: u64,
     width: f64,
     height: f64,
     ideal_proportions: &HashMap<String, f64>,
@@ -353,7 +353,7 @@ pub fn render_sankey(
     svg
 }
 
-pub fn render_band(start_timestamp: i64, end_timestamp: i64, width: f64, height: f64) -> String {
+pub fn render_band(start_timestamp: u64, end_timestamp: u64, width: f64, height: f64) -> String {
     let (_, _, band) = parse_file(
         "/home/sam/rofi_time_tracker/log",
         start_timestamp,
@@ -373,12 +373,12 @@ pub fn render_band(start_timestamp: i64, end_timestamp: i64, width: f64, height:
         let color = format!("hsl({}, 30%, 50%)", hue);
 
         let width = width;
-        let height = duration as f64/total*height;
+        let height = 0.9 * duration as f64 / total * height;
 
         svg += format!(
             "<rect class='hover-element' data-tooltip='{}<br>{}' x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
             name,
-            format_time(duration),
+            format_time(duration as u64),
             x, y, width, height, color
         )
         .as_str();

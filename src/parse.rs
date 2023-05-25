@@ -3,9 +3,9 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
 
-fn parse_line(line: &str) -> (i64, String) {
+fn parse_line(line: &str) -> (u64, String) {
     let mut words = line.split('\t');
-    let epoch: i64 = words.next().unwrap().parse().unwrap();
+    let epoch: u64 = words.next().unwrap().parse().unwrap();
     let tag = words.next().unwrap();
 
     (epoch, tag.to_string())
@@ -13,9 +13,9 @@ fn parse_line(line: &str) -> (i64, String) {
 
 pub fn parse_file(
     filename: &str,
-    begin_timestamp: i64,
-    end_timestamp: i64,
-) -> (TreeNode, [String; 3], Vec<(i64, String)>) {
+    begin_timestamp: u64,
+    end_timestamp: u64,
+) -> (TreeNode, [String; 3], Vec<(u64, String)>) {
     let mut activities = Vec::new();
 
     let mut file = File::open(filename).unwrap();
@@ -40,7 +40,7 @@ pub fn parse_file(
             end_time = end_timestamp;
         }
 
-        let delta = end_time - start_time;
+        let delta = end_time as i64 - start_time as i64;
 
         if delta > 0 && activity != "health.rest.sleep" {
             activities.push((delta, activity));

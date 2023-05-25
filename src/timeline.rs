@@ -21,12 +21,12 @@ pub fn draw_timeline(
     let current_time = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
-        .as_secs() as i64;
+        .as_secs();
 
     let start_of_first_day = 1672552800;
     let mut current_day = start_of_first_day;
 
-    let mut data: Vec<(Vec<Row>, i64, f64)> = Vec::new();
+    let mut data: Vec<(Vec<Row>, u64, f64)> = Vec::new();
     loop {
         let (tree, _, _) = parse_file(filename, current_day, current_day + 60 * 60 * 24);
 
@@ -78,7 +78,7 @@ pub fn draw_timeline(
 
         let points = format!("{:.3} points", column.2);
 
-        let time: DateTime<_> = Chicago.timestamp(timestamp, 0);
+        let time: DateTime<_> = Chicago.timestamp(timestamp as i64, 0);
         svg += format!(
             "<g class='hover-element' data-tooltip='{time}<br>{points}' onclick='changegraph({timestamp});'>\n"
         )
