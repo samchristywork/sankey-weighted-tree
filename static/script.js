@@ -21,6 +21,7 @@ function changegraph(time) {
   clearInterval(interval);
   get_timeline();
   get_sankey();
+  get_stats();
   get_band();
 }
 
@@ -34,6 +35,7 @@ async function getData() {
       clearInterval(interval);
       get_timeline();
       get_sankey();
+      get_stats();
       get_band();
       return;
     case "1-hour":
@@ -67,6 +69,7 @@ async function getData() {
   clearInterval(interval);
   get_timeline();
   get_sankey();
+  get_stats();
   get_band();
 }
 
@@ -76,6 +79,15 @@ async function get_timeline() {
   document.getElementById("timeline").innerHTML = text;
 
   apply_hover();
+}
+
+async function get_stats() {
+  let start_time = a;
+  let end_time = b;
+
+  const response = await fetch("/stats?start_time=" + start_time + "&end_time=" + end_time);
+  const text = await response.text();
+  document.getElementById("stats").innerHTML = text;
 }
 
 async function get_sankey() {
@@ -130,10 +142,12 @@ function apply_hover() {
 
 get_timeline();
 get_sankey();
+get_stats();
 get_band();
 let interval = setInterval(function() {
   a = getStartOfDayTimestamp();
   b = Math.floor(+(new Date())/1000);
   get_sankey();
+  get_stats();
   get_band();
 }, 10000);
