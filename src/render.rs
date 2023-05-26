@@ -26,7 +26,7 @@ pub fn render_tree(
 
     let mut y = 10.;
     let factor = 1.9 * tree.value / height;
-    let width = 0.47 * width / 3.;
+    let component_width = width / 3. - 5.;
     let mut innercount = 0.;
     let mut middlecount = 0.;
     let mut outercount = 0.;
@@ -55,7 +55,7 @@ pub fn render_tree(
         let mut state = DefaultHasher::new();
         label.hash(&mut state);
         let hue = state.finish() % 360;
-        svg += ComponentBuilder::new(x, y, x + width - 10., y + outercount)
+        svg += ComponentBuilder::new(x, y, x + component_width - 10., y + outercount)
             .height(value / factor)
             .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
             .body_color(color)
@@ -78,7 +78,7 @@ pub fn render_tree(
         keys.sort();
         for key in keys {
             let minor = key;
-            let x = x + width;
+            let x = x + component_width;
 
             let value = tree.children[key].value;
 
@@ -90,7 +90,55 @@ pub fn render_tree(
             let label = format!("{major}.{minor}");
             let mut state = DefaultHasher::new();
             label.hash(&mut state);
-            svg += ComponentBuilder::new(x, y + outercount, x + width - 10., y + middlecount)
+            svg += ComponentBuilder::new(
+                x,
+                y + outercount,
+                x + component_width - 10.,
+                y + middlecount,
+            )
+            .height(value / factor)
+            .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
+            .body_color(color)
+            .right_text(label.as_str())
+            .font_size(font_size)
+            .data(
+                format!(
+                    "{label}: {} ({:.3}%)",
+                    format_time(value as u64),
+                    value / total_day_length * 100.
+                )
+                .as_str(),
+            )
+            .build()
+            .draw()
+            .as_str();
+
+            let tree = &tree.children[key];
+            let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
+            keys.sort();
+            for key in keys {
+                let activity = key;
+                let x = x + component_width;
+
+                let value = tree.children[key].value;
+
+                let color = match major == highlight[0].as_str()
+                    && minor == highlight[1].as_str()
+                    && activity == highlight[2].as_str()
+                {
+                    false => "#444",
+                    true => "#222",
+                };
+
+                let label = format!("{major}.{minor}.{activity}");
+                let mut state = DefaultHasher::new();
+                label.hash(&mut state);
+                svg += ComponentBuilder::new(
+                    x,
+                    y + middlecount,
+                    x + component_width - 10.,
+                    y + innercount,
+                )
                 .height(value / factor)
                 .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
                 .body_color(color)
@@ -107,44 +155,6 @@ pub fn render_tree(
                 .build()
                 .draw()
                 .as_str();
-
-            let tree = &tree.children[key];
-            let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
-            keys.sort();
-            for key in keys {
-                let activity = key;
-                let x = x + width;
-
-                let value = tree.children[key].value;
-
-                let color = match major == highlight[0].as_str()
-                    && minor == highlight[1].as_str()
-                    && activity == highlight[2].as_str()
-                {
-                    false => "#444",
-                    true => "#222",
-                };
-
-                let label = format!("{major}.{minor}.{activity}");
-                let mut state = DefaultHasher::new();
-                label.hash(&mut state);
-                svg += ComponentBuilder::new(x, y + middlecount, x + width - 10., y + innercount)
-                    .height(value / factor)
-                    .color(format!("hsl({}, {saturation}, {lightness})", hue).as_str())
-                    .body_color(color)
-                    .right_text(label.as_str())
-                    .font_size(font_size)
-                    .data(
-                        format!(
-                            "{label}: {} ({:.3}%)",
-                            format_time(value as u64),
-                            value / total_day_length * 100.
-                        )
-                        .as_str(),
-                    )
-                    .build()
-                    .draw()
-                    .as_str();
                 y += value / factor;
                 innercount += step;
             }
