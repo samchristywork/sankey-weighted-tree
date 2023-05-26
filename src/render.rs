@@ -362,6 +362,8 @@ pub fn render_band(start_timestamp: u64, end_timestamp: u64, width: f64, height:
         end_timestamp,
     );
 
+    let len = band.len();
+
     let total = band.iter().fold(1, |acc, x| acc + x.1) as f64;
 
     let mut svg = format!("<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'>\n");
@@ -389,6 +391,8 @@ pub fn render_band(start_timestamp: u64, end_timestamp: u64, width: f64, height:
         y += height;
     }
     svg += "</svg>";
+
+    svg += format!("<div>{} context switches</div>", len).as_str();
 
     svg
 }
