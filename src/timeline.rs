@@ -78,7 +78,7 @@ pub fn draw_timeline(
 
         let points = format!("{:.3} points", column.2);
 
-        let time: DateTime<_> = Chicago.timestamp(timestamp as i64, 0);
+        let time: DateTime<_> = Chicago.timestamp_opt(timestamp as i64, 0).unwrap();
         svg += format!(
             "<g class='hover-element' data-tooltip='{time}<br>{points}' onclick='changegraph({timestamp});'>\n"
         )
