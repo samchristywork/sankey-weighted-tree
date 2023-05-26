@@ -378,7 +378,7 @@ pub fn render_band(start_timestamp: u64, end_timestamp: u64, width: f64, height:
         let width = width;
         let height = 0.9 * duration as f64 / total * height;
 
-        let time: DateTime<_> = Chicago.timestamp(timestamp as i64, 0);
+        let time: DateTime<_> = Chicago.timestamp_opt(timestamp as i64, 0).unwrap();
         svg += format!(
             "<rect class='hover-element' data-tooltip='{}<br>{}<br>{}' x='{}' y='{}' width='{}' height='{}' fill='{}' />\n",
             name,
