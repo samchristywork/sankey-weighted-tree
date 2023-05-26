@@ -56,6 +56,20 @@ async fn index(mut _req: Request<()>) -> tide::Result {
     Ok(res)
 }
 
+async fn stats(req: Request<()>) -> tide::Result {
+    let query = req.query::<HashMap<String, String>>()?;
+    let start_time = query.get("start_time").unwrap();
+    let end_time = query.get("end_time").unwrap();
+
+    let start_time = start_time.parse::<u64>().unwrap();
+    let end_time = end_time.parse::<u64>().unwrap();
+
+    let ideal_proportions = get_ideal_proportions(start_time);
+
+    let out = render_table(start_time, end_time, &ideal_proportions);
+    Ok(out.into())
+}
+
 async fn timeline(req: Request<()>) -> tide::Result {
     let query = req.query::<HashMap<String, String>>()?;
     let width = query.get("width").unwrap();
@@ -91,8 +105,7 @@ async fn sankey(req: Request<()>) -> tide::Result {
 
     let ideal_proportions = get_ideal_proportions(start_time);
 
-    let out = render_table(start_time, end_time, &ideal_proportions)
-        + render_sankey(start_time, end_time, width, height, &ideal_proportions).as_str();
+    let out = render_sankey(start_time, end_time, width, height, &ideal_proportions);
     Ok(out.into())
 }
 
@@ -109,20 +122,6 @@ async fn band(req: Request<()>) -> tide::Result {
     let height = height.parse::<f64>().unwrap();
 
     let out = render_band(start_time, end_time, width, height);
-    Ok(out.into())
-}
-
-async fn stats(req: Request<()>) -> tide::Result {
-    let query = req.query::<HashMap<String, String>>()?;
-    let start_time = query.get("start_time").unwrap();
-    let end_time = query.get("end_time").unwrap();
-
-    let start_time = start_time.parse::<u64>().unwrap();
-    let end_time = end_time.parse::<u64>().unwrap();
-
-    let ideal_proportions = get_ideal_proportions(start_time);
-
-    let out = render_table(start_time, end_time, &ideal_proportions);
     Ok(out.into())
 }
 
