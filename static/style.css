@@ -1,5 +1,5 @@
 body {
-  background-color: black;
+  background-color: #080d11;
   color: white;
   margin: 0;
 }
@@ -17,11 +17,6 @@ body {
   stroke-width: 2;
   stroke: #ccc;
   /* transition: all 0.2s ease; */
-}
-
-#app {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
 }
 
 .stats-container {
