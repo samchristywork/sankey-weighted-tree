@@ -96,7 +96,8 @@ async function get_sankey() {
 
   const response = await fetch("/sankey?start_time=" + start_time + "&end_time=" + end_time + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
   const text = await response.text();
-  document.getElementById("app").innerHTML = text;
+  document.getElementById("sankey").innerHTML = text;
+  document.getElementById("sankey").setAttribute("style",`height:${window.innerHeight}px`);
 
   d3.selectAll("text").each(function() {
     this.parentNode.appendChild(this);
@@ -112,6 +113,7 @@ async function get_band() {
   const response = await fetch("/band?start_time=" + start_time + "&end_time=" + end_time + "&width=" + window.innerWidth + "&height=" + window.innerHeight);
   const text = await response.text();
   document.getElementById("band").innerHTML = text;
+  document.getElementById("band").setAttribute("style",`height:${window.innerHeight}px`);
 
   apply_hover();
 }
