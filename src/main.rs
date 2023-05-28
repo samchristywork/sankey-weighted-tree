@@ -27,6 +27,10 @@ fn get_ideal_proportions(timestamp: u64) -> HashMap<String, f64> {
             continue;
         }
 
+        if line.starts_with("#") {
+            continue;
+        }
+
         let len = line.split(" ").count();
         let mut split = line.split(" ");
         match len {
