@@ -92,6 +92,12 @@ pub fn draw_timeline(
             svg += format!("<rect x='{x}' y='{y}' width='{x_step}' height='{delta}' fill='hsl({hue}, {saturation}, {lightness})' />\n").as_str();
             y += delta;
         }
+
+        svg += format!(
+            "<text fill=\"white\" font-size=\"12\" x=\"{}\" y=\"{}\">{:.0}</text>",
+            x, y, column.2
+        ).as_str();
+
         svg += format!("</g>").as_str();
         x += x_step;
     }
