@@ -242,28 +242,32 @@ pub fn render_table(
     out += format!("<span>Pred.</span>").as_str();
     out += format!("<span>Ratio</span>").as_str();
 
-    let mut keys: Vec<&String> = tree.children.keys().into_iter().collect();
+    let mut keys: Vec<&String> = ideal_proportions.keys().into_iter().collect();
+
     keys.sort();
 
     let time_domain = keys
         .iter()
-        .fold(0., |acc, x| tree.children[x.as_str()].value + acc);
-    let ideal_domain = ideal_proportions.iter().fold(0., |acc, x| acc + x.1);
+        .fold(0., |acc, x| match tree.children.get(x.as_str()) {
+            Some(x) => x.value + acc,
+            None => acc,
+        });
 
-    let mut table_values = Vec::new();
+    let mut lines = Vec::new();
 
-    for key in keys.clone() {
-        let mut ideal_value = 0.;
+    for key in keys {
+        if key == "slop" {
+            continue;
+        }
 
-        let value = match ideal_proportions.get(key.as_str()) {
-            Some(x) => x,
-            None => continue,
+        let ideal_value = ideal_proportions[key];
+
+        let actual = match tree.children.get(key.as_str()) {
+            Some(x) => x.value,
+            None => 0.,
         };
 
-        ideal_value += 100. * value / ideal_domain;
-        let actual_value = 100. * tree.children[key].value / time_domain;
-
-        let color = match actual_value > ideal_value {
+        let color = match 100. * actual / time_domain > ideal_value {
             false => "red",
             true => "green",
         };
@@ -273,77 +277,32 @@ pub fn render_table(
             true => "bold",
         };
 
-        let percent_complete = 100. * actual_value / ideal_value;
+        let actual_value = 100. * actual / time_domain;
+        let completed = format_time(actual as u64);
+        let predicted = format_time((ideal_value / 100. * 16. * 60. * 60.) as u64);
+        let ratio = 100. * actual / time_domain / ideal_value;
 
-        table_values.push((
-            key,
-            actual_value,
-            ideal_value,
-            color,
-            percent_complete,
-            weight,
-            tree.children[key].value,
-        ));
+        let style = format!("font-weight: {}; color: {}", weight, color);
+
+        let mut line = String::new();
+        line += format!("<span style='{style}'>{}</span>", key).as_str();
+        line += format!("<span style='{style}'>{:.3}</span>", actual_value).as_str();
+        line += format!("<span style='{style}'>{:.3}</span>", ideal_value).as_str();
+        line += format!("<span style='{style}'>{}</span>", completed).as_str();
+        line += format!("<span style='{style}'>{}</span>", predicted).as_str();
+        line += format!("<span style='{style}'>{:.3}</span>", ratio).as_str();
+        lines.push((line, ratio));
     }
 
-    table_values.sort_by(|a, b| a.4.partial_cmp(&b.4).unwrap());
+    lines.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
 
-    for value in table_values {
-        let key = value.0;
-        let actual_value = value.1;
-        let ideal_value = value.2;
-        let color = value.3;
-        let percent_complete = value.4;
-        let weight = value.5;
-        let duration = value.6;
-
-        out += format!(
-            "<span style='font-weight: {}; color: {}'> {}</span>",
-            weight, color, key,
-        )
-        .as_str();
-        out += format!(
-            "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
-            weight, color, actual_value,
-        )
-        .as_str();
-        out += format!(
-            "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
-            weight, color, ideal_value
-        )
-        .as_str();
-        out += format!(
-            "<span style='font-weight: {}; color: {}'>{}</span>",
-            weight,
-            color,
-            format_time(duration as u64)
-        )
-        .as_str();
-        out += format!(
-            "<span style='font-weight: {}; color: {}'>{}</span>",
-            weight,
-            color,
-            format_time((ideal_value / 100. * 16. * 60. * 60.) as u64)
-        )
-        .as_str();
-        out += format!(
-            "<span style='font-weight: {}; color: {}'>{:.3}%</span>",
-            weight, color, percent_complete
-        )
-        .as_str();
+    for line in lines {
+        out += line.0.as_str();
     }
-
-    out += format!("<span></span>").as_str();
-    out += format!("<span></span>").as_str();
-    out += format!("<span></span>").as_str();
-    out += format!("<span></span>").as_str();
-    out += format!("<span></span>").as_str();
-    out += format!("<span></span>").as_str();
 
     out += format!("{:.3} points", get_points(&tree, ideal_proportions)).as_str();
 
     out += "</span>";
-
     out + "</span>"
 }
 
