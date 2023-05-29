@@ -294,11 +294,11 @@ pub fn render_table(
 
         let mut line = String::new();
         line += format!("<span style='{style}'>{}</span>", capital_key).as_str();
-        line += format!("<span style='{style}'>{:.3}</span>", actual_value).as_str();
-        line += format!("<span style='{style}'>{:.3}</span>", ideal_value).as_str();
+        line += format!("<span style='{style}'>{:.3}%</span>", actual_value).as_str();
+        line += format!("<span style='{style}'>{:.3}%</span>", ideal_value).as_str();
         line += format!("<span style='{style}'>{}</span>", completed).as_str();
         line += format!("<span style='{style}'>{}</span>", predicted).as_str();
-        line += format!("<span style='{style}'>{:.3}</span>", ratio).as_str();
+        line += format!("<span style='{style}'>{:.3}%</span>", ratio).as_str();
         lines.push((line, ratio));
     }
 
