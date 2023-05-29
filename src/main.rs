@@ -4,6 +4,7 @@ pub mod parse;
 pub mod point;
 pub mod render;
 pub mod timeline;
+pub mod tree;
 pub mod tree_node;
 
 use parse::parse_file;
