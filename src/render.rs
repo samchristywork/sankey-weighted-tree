@@ -267,7 +267,12 @@ pub fn render_table(
             None => 0.,
         };
 
-        let color = match 100. * actual / time_domain > ideal_value {
+        let actual_value = 100. * actual / time_domain;
+        let completed = format_time(actual as u64);
+        let predicted = format_time((ideal_value / 100. * 16. * 60. * 60.) as u64);
+        let ratio = 100. * actual / time_domain / ideal_value;
+
+        let color = match ratio > 1. {
             false => "red",
             true => "green",
         };
@@ -276,11 +281,6 @@ pub fn render_table(
             false => "normal",
             true => "bold",
         };
-
-        let actual_value = 100. * actual / time_domain;
-        let completed = format_time(actual as u64);
-        let predicted = format_time((ideal_value / 100. * 16. * 60. * 60.) as u64);
-        let ratio = 100. * actual / time_domain / ideal_value;
 
         let style = format!("font-weight: {}; color: {}", weight, color);
 
