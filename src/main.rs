@@ -6,6 +6,7 @@ pub mod render;
 pub mod timeline;
 pub mod tree;
 pub mod tree_node;
+pub mod util;
 
 use parse::parse_file;
 use render::render_band;
