@@ -260,6 +260,14 @@ pub fn render_table(
             continue;
         }
 
+        let capital_key = key
+            .chars()
+            .next()
+            .unwrap()
+            .to_uppercase()
+            .to_string()
+            + &key[1..];
+
         let ideal_value = ideal_proportions[key];
 
         let actual = match tree.children.get(key.as_str()) {
@@ -285,7 +293,7 @@ pub fn render_table(
         let style = format!("font-weight: {}; color: {}", weight, color);
 
         let mut line = String::new();
-        line += format!("<span style='{style}'>{}</span>", key).as_str();
+        line += format!("<span style='{style}'>{}</span>", capital_key).as_str();
         line += format!("<span style='{style}'>{:.3}</span>", actual_value).as_str();
         line += format!("<span style='{style}'>{:.3}</span>", ideal_value).as_str();
         line += format!("<span style='{style}'>{}</span>", completed).as_str();
