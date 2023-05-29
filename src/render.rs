@@ -1,5 +1,5 @@
-use crate::component_builder::ComponentBuilder;
 use crate::parse::parse_file;
+use crate::tree::render_tree;
 use crate::tree_node::TreeNode;
 use crate::util::format_time;
 use chrono::{DateTime, TimeZone};
@@ -83,13 +83,7 @@ pub fn render_table(
             continue;
         }
 
-        let capital_key = key
-            .chars()
-            .next()
-            .unwrap()
-            .to_uppercase()
-            .to_string()
-            + &key[1..];
+        let capital_key = key.chars().next().unwrap().to_uppercase().to_string() + &key[1..];
 
         let ideal_value = ideal_proportions[key];
 
