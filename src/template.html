@@ -9,7 +9,9 @@
   <script src="/d3.v7.min.js"></script>
 </head>
 <body>
-  <div id="timeline" style="height: 90px"></div>
+  <div class="timeline-wrapper">
+    <div id="timeline" class="timeline"></div>
+  </div>
   <div style="margin-left: 1rem;">
     <label for="period">Select Period:</label>
     <select name="period" id="period" onchange="getData()">

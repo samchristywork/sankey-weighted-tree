@@ -74,7 +74,7 @@ async function getData() {
 }
 
 async function get_timeline() {
-  const response = await fetch("/timeline?width=" + window.innerWidth + "&height=" + "80");
+  const response = await fetch("/timeline?width=" + "1920" + "&height=" + "80");
   const text = await response.text();
   document.getElementById("timeline").innerHTML = text;
 

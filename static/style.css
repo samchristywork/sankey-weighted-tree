@@ -26,3 +26,19 @@ body {
   height: 15rem;
   column-gap: .25rem;
 }
+
+.timeline-wrapper {
+  position: relative;
+  height: 100px;
+  width: 100%;
+  background-color: #080d11;
+  overflow: hidden;
+}
+
+.timeline {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 90px;
+  width: 1920px;
+}
