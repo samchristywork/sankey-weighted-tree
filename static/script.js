@@ -137,7 +137,12 @@ function apply_hover() {
 
     element.addEventListener('mousemove', (event) => {
       tooltip.style.top = `${event.pageY + 10}px`;
-      tooltip.style.left = `${event.pageX + 10}px`;
+
+      if (event.pageX > window.innerWidth - 100) {
+        tooltip.style.left = `${event.pageX - 100}px`;
+      }else {
+        tooltip.style.left = `${event.pageX + 10}px`;
+      }
     });
   });
 }
