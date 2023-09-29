@@ -92,7 +92,7 @@ pub fn render_table(
             None => 0.,
         };
 
-        let day_length = 16. * 60. * 60.;
+        let day_length = 12. * 60. * 60.;
 
         let actual_value = 100. * actual / time_domain;
         let completed = format_time(actual as u64);
